@@ -30,6 +30,9 @@ namespace ARMyo.Biomecanica
         public Vector2 anclaPantalla = new Vector2(1f, 0f);
         public Vector2 pivote = new Vector2(1f, 0f);
         public Vector2 desplazamiento = new Vector2(-10f, 10f);
+        [Tooltip("Solo el estado (Midiendo / Sin usuario…) en letra grande, para leer de lejos.")]
+        public bool modoCompacto;
+        public Vector2 tamanoCompacto = new Vector2(580f, 92f);
 
         [Header("Resultado (solo lectura)")]
         [SerializeField] private float flexionRodilla;
@@ -121,7 +124,7 @@ namespace ARMyo.Biomecanica
         // ─────────────────────────────────────────────
         // Panel de validación (esquina superior derecha)
         // ─────────────────────────────────────────────
-        GUIStyle _titulo, _texto;
+        GUIStyle _titulo, _texto, _grande;
 
         void OnGUI()
         {
@@ -132,20 +135,32 @@ namespace ARMyo.Biomecanica
                 _texto  = new GUIStyle(GUI.skin.label) { fontSize = 16 };
             }
 
-            float w = 420, h = 200;
-            EscalaUI.Aplicar();
-            var r = EscalaUI.Colocar(anclaPantalla, pivote, desplazamiento, new Vector2(w, h));
-            GUI.Box(r, GUIContent.none);
-            GUILayout.BeginArea(new Rect(r.x + 12, r.y + 8, w - 24, h - 16));
-
-            GUILayout.Label($"Kinect – pierna {bridge.lado.ToString().ToLower()}", _titulo);
-
             string estado;
             Color color;
             if (!bridge.KinectListo)      { estado = "Sensor no iniciado";                           color = Color.red; }
             else if (!bridge.HayUsuario)  { estado = "Sin usuario: colócate frente al sensor";       color = Color.yellow; }
             else if (!trackingActivo)     { estado = $"Pierna no visible ({bridge.JointFaltante})";  color = Color.yellow; }
             else                          { estado = "Midiendo";                                     color = Color.green; }
+
+            EscalaUI.Aplicar();
+            if (modoCompacto)
+            {
+                if (_grande == null) _grande = new GUIStyle(GUI.skin.label) { fontSize = 32, fontStyle = FontStyle.Bold, wordWrap = true };
+                var rc = EscalaUI.Colocar(anclaPantalla, pivote, desplazamiento, tamanoCompacto);
+                GUI.Box(rc, GUIContent.none);
+                GUI.Box(rc, GUIContent.none);
+                GUI.color = color;
+                GUI.Label(new Rect(rc.x + 16, rc.y + 8, rc.width - 32, rc.height - 16), "● Kinect: " + estado, _grande);
+                GUI.color = Color.white;
+                return;
+            }
+
+            float w = 420, h = 200;
+            var r = EscalaUI.Colocar(anclaPantalla, pivote, desplazamiento, new Vector2(w, h));
+            GUI.Box(r, GUIContent.none);
+            GUILayout.BeginArea(new Rect(r.x + 12, r.y + 8, w - 24, h - 16));
+
+            GUILayout.Label($"Kinect – pierna {bridge.lado.ToString().ToLower()}", _titulo);
 
             GUI.color = color;
             GUILayout.Label("● " + estado, _texto);

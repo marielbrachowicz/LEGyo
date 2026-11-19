@@ -36,7 +36,60 @@ namespace ARMyo.Anatomia
         [Tooltip("Mostrar la línea de ayuda de teclas.")]
         public string ayudaTeclas = "↑/↓ simular ángulo   Espacio ciclo automático   K volver al Kinect";
 
+        [Header("Modo grande (para leer de lejos)")]
+        [Tooltip("Solo la fase y los músculos activos, con letra grande. Sin ángulos ni ayuda de teclas.")]
+        public bool modoGrande;
+        public Vector2 tamanoGrande = new Vector2(580f, 460f);
+        [Range(1, 9)] public int maxMusculosGrande = 4;
+
         GUIStyle _titulo, _fase, _texto, _chico;
+        GUIStyle _gTitulo, _gFase, _gMusculo;
+
+        void DibujarGrande()
+        {
+            if (_gTitulo == null)
+            {
+                _gTitulo  = new GUIStyle(GUI.skin.label) { fontSize = 34, fontStyle = FontStyle.Bold };
+                _gFase    = new GUIStyle(GUI.skin.label) { fontSize = 68, fontStyle = FontStyle.Bold, wordWrap = true };
+                _gMusculo = new GUIStyle(GUI.skin.label) { fontSize = 32, wordWrap = true };
+            }
+
+            EscalaUI.Aplicar();
+            var r = EscalaUI.Colocar(anclaPantalla, pivote, desplazamiento, tamanoGrande);
+            GUI.Box(r, GUIContent.none);
+            GUI.Box(r, GUIContent.none); // dos veces = fondo más opaco
+            GUILayout.BeginArea(new Rect(r.x + 16, r.y + 10, r.width - 32, r.height - 20));
+
+            GUI.color = new Color(1f, 1f, 1f, 0.8f);
+            string sinDatos = fuente != null && !fuente.HayDatos ? "  (sin datos)" : "";
+            GUILayout.Label(titulo + sinDatos, _gTitulo);
+
+            var fase = clasificador.Fase;
+            GUI.color = ColorFase(fase);
+            GUILayout.Label(MuscleAnatomyData.NombreFase(fase).ToUpperInvariant(), _gFase);
+            GUI.color = Color.white;
+
+            if (intensidad != null)
+            {
+                var activos = intensidad.MusculosActivos();
+                for (int i = 0; i < activos.Count && i < maxMusculosGrande; i++)
+                {
+                    var (info, val) = activos[i];
+                    GUI.color = Color.Lerp(Color.white, new Color(1f, 0.4f, 0.35f), val);
+                    GUILayout.Label("• " + info.nombre, _gMusculo);
+                }
+                GUI.color = Color.white;
+            }
+            GUILayout.EndArea();
+        }
+
+        static Color ColorFase(FaseMovimiento fase) => fase switch
+        {
+            FaseMovimiento.Flexion   => new Color(1f, 0.55f, 0.3f),
+            FaseMovimiento.Extension => new Color(0.4f, 0.8f, 1f),
+            FaseMovimiento.Sostenido => new Color(1f, 0.9f, 0.4f),
+            _                        => new Color(0.75f, 0.75f, 0.75f),
+        };
 
         void Awake()
         {
@@ -49,6 +102,7 @@ namespace ARMyo.Anatomia
         void OnGUI()
         {
             if (!mostrar || clasificador == null) return;
+            if (modoGrande) { DibujarGrande(); return; }
             if (_titulo == null)
             {
                 _titulo = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };

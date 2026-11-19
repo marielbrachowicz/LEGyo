@@ -13,9 +13,9 @@ namespace ARMyo.EditorTools
     /// <summary>
     /// Menú "ARMyo → 4. Crear escena mixta (cámara | modelo)".
     /// Copia PruebaPierna (ya con las dos piernas del menú 3) en EscenaMixta y la divide en tres columnas:
-    ///   · 0–45 %   → imagen en color del Kinect, en espejo (la "mitad real")
-    ///   · 45–75 %  → las dos piernas virtuales con sus músculos
-    ///   · 75–100 % → los paneles (Kinect, rodilla derecha, rodilla izquierda), uno debajo de otro
+    ///   · 0–40 %   → imagen en color del Kinect, en espejo (la "mitad real")
+    ///   · 40–68 %  → las dos piernas virtuales con sus músculos
+    ///   · 68–100 % → los paneles, en letra grande (Kinect, rodilla derecha, rodilla izquierda), uno debajo de otro
     /// Activa la imagen en color en el KinectManager.
     /// PruebaPierna no se toca. Se puede ejecutar varias veces: rehace EscenaMixta desde PruebaPierna.
     /// </summary>
@@ -49,7 +49,7 @@ namespace ARMyo.EditorTools
             else aviso += "\n⚠ No hay KinectController en la escena (menú ARMyo → 2): la mitad de la cámara se verá en negro.\n";
 
             // ── Columnas ──────────────────────────────────
-            const float finCamara = 0.45f, finModelo = 0.75f;
+            const float finCamara = 0.40f, finModelo = 0.68f;
 
             // Cámara 3D: solo la columna del modelo, encuadrando las dos piernas
             var cam = UnityEngine.Camera.main;
@@ -104,12 +104,14 @@ namespace ARMyo.EditorTools
             foreach (var m in Object.FindObjectsOfType<MedidorAngulosPierna>(true))
             {
                 m.anclaPantalla = arribaDerecha; m.pivote = arribaDerecha; m.desplazamiento = new Vector2(-20f, 10f);
+                m.modoCompacto = true;
                 EditorUtility.SetDirty(m);
             }
             foreach (var p in paneles)
             {
                 bool derecha = p.gameObject.name.EndsWith("Derecha");
-                p.Colocar(arribaDerecha, arribaDerecha, new Vector2(-20f, derecha ? 220f : 500f));
+                p.Colocar(arribaDerecha, arribaDerecha, new Vector2(-20f, derecha ? 112f : 582f));
+                p.modoGrande = true; // se lee a 2–3 m: solo la fase y los músculos, con letra grande
                 EditorUtility.SetDirty(p);
             }
 
