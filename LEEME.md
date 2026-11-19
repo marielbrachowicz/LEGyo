@@ -98,6 +98,7 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
 3. Abre `Assets/ARMyo/Scenes/PruebaPierna` y dale a **Play**, de frente al Kinect v2, a 2–3 m. Los ángulos aparecen arriba a la derecha.
    - Si la escena no tiene `KinectController`, usa el menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
    - Teclas: **0–8** cambian la animación, **R** reinicia el máximo y **P** copia los datos crudos a la Console.
+   - Fase 3: menú **ARMyo → 3. Añadir animación en vivo**. Desde ese momento la pierna sigue tu rodilla y las teclas 0–8 quedan desactivadas. Sin Kinect: **↑/↓** simulan el ángulo, **Espacio** hace un ciclo automático y **K** vuelve al Kinect.
 4. Lo que **no** está en GitHub porque pesa demasiado, y se pide aparte (USB, Drive…):
    - `01_Referencia_MiembroSuperior/`: **obligatoria** (ver el paso 0). Es el proyecto del brazo, que sirve de plantilla para la Fase 3 (`MovementClassifier`, `MuscleIntensityByAngle`, `MuscleAnatomyData`).
    - `02_Modelos3D/`: el modelo del cuerpo completo, que es solo de respaldo. `PIERNA.fbx` ya está dentro de `Assets`.
@@ -128,7 +129,13 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
   - `Scripts/Sensores/KinectBridgePierna.cs`: lee el Kinect y publica un `LegBodyFrame` en cada frame. Se elige la pierna derecha o la izquierda.
   - `Scripts/Biomecanica/MedidorAngulosPierna.cs`: suaviza los ángulos y los muestra en pantalla.
   - `Editor/ConfigurarKinect.cs`: menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
-- [ ] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender.
+- [ ] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender. **Código hecho el 19/11/2026 en la rama `fase3-animacion`; falta probarlo en Unity.**
+  - `Scripts/Biomecanica/FuenteAngulosPierna.cs`: toma el ángulo de `MedidorAngulosPierna` o lo simula con el teclado (**↑/↓**, **Espacio** = ciclo automático, **K** = volver al Kinect).
+  - `Scripts/Biomecanica/MovementClassifier.cs`: flexión / extensión / mantiene / reposo según la velocidad del ángulo, con presets de rodilla y cadera.
+  - `Scripts/Animacion/PiernaAnimadaEnVivo.cs`: fija el tiempo de `FLEXION_RODILLA` según el ángulo medido. Al arrancar mide el clip (huesos `Leg_Upper.R` / `Leg_Knee.R`) para que el modelo muestre el mismo ángulo que el usuario.
+  - `Scripts/Anatomia/MuscleAnatomyData.cs`, `MuscleIntensityByAngle.cs`, `PanelMovimientoPierna.cs`: nombres y acción de los músculos, color blanco → rojo con `MaterialPropertyBlock` y panel en pantalla.
+  - Músculos que se colorean (nombres reales del FBX): flexores `Biceps_Femoris_Long_Head_R`, `Biceps_Femoris_Short_Head_R`, `Semitendinosus_R`, `Semimembranosus_R`, `Gastrocnemius_Lateral_Medial_R`; extensores `Rectus_Femoris_R`, `Vastus_Lateralis_R`, `Vastus_Medialis_R`, `Vastus_Intermedius_R`.
+  - `Editor/ConfigurarAnimacionEnVivo.cs`: menú **ARMyo → 3. Añadir animación en vivo**.
 - [ ] Fase 4: escena mixta (mitad real con el espejo, mitad virtual con el modelo) y la ventana AR sobre la rodilla.
 - [ ] Fase 5: gesto de la mano contraria + nombres de los músculos por fase.
 - [ ] Fase 6: cadera (flexión/extensión, abducción/aducción, rotaciones).
