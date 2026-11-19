@@ -1,6 +1,7 @@
 using UnityEngine;
 using ARMyo.Animacion;
 using ARMyo.Biomecanica;
+using ARMyo.Core;
 
 namespace ARMyo.Anatomia
 {
@@ -24,7 +25,7 @@ namespace ARMyo.Anatomia
         public Vector2 anclaPantalla = Vector2.zero;
         [Tooltip("Esquina del panel (0–1) que se pone en el ancla. (1,0) = su esquina superior derecha.")]
         public Vector2 pivote = Vector2.zero;
-        [Tooltip("Desplazamiento en píxeles desde el ancla.")]
+        [Tooltip("Desplazamiento desde el ancla, en píxeles de una pantalla 1920×1080 (se escala con la ventana).")]
         public Vector2 desplazamiento = new Vector2(10f, 10f);
 
         /// <summary>Coloca el panel: ancla y pivote en fracciones (0–1), desplazamiento en píxeles.</summary>
@@ -57,8 +58,8 @@ namespace ARMyo.Anatomia
             }
 
             float w = 420, h = 270;
-            var r = new Rect(anclaPantalla.x * Screen.width + desplazamiento.x - pivote.x * w,
-                             anclaPantalla.y * Screen.height + desplazamiento.y - pivote.y * h, w, h);
+            EscalaUI.Aplicar();
+            var r = EscalaUI.Colocar(anclaPantalla, pivote, desplazamiento, new Vector2(w, h));
             GUI.Box(r, GUIContent.none);
             GUILayout.BeginArea(new Rect(r.x + 12, r.y + 8, w - 24, h - 16));
 

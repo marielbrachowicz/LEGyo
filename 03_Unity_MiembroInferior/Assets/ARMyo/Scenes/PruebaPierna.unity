@@ -187,7 +187,109 @@ MonoBehaviour:
   bIgnoreZCoordinates: 0
   bIgnoreInferredJoints: 0
   usersFaceBackwards: 0
---- !u!1001 &628923087
+--- !u!1 &738643145
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 738643149}
+  - component: {fileID: 738643148}
+  - component: {fileID: 738643147}
+  - component: {fileID: 738643146}
+  m_Layer: 0
+  m_Name: ARMyo_Fase3_Izquierda
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &738643146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738643145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e823b34b514e56ad07e7b8904da85f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clasificador: {fileID: 738643147}
+  intensidad: {fileID: 1265072418}
+  fuente: {fileID: 738643148}
+  pierna: {fileID: 1265072417}
+  mostrar: 1
+  titulo: Rodilla izquierda
+  anclaPantalla: {x: 1, y: 0}
+  pivote: {x: 1, y: 0}
+  desplazamiento: {x: -10, y: 220}
+  ayudaTeclas: W/S simular   Espacio ciclo   K volver al Kinect
+--- !u!114 &738643147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738643145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffee18cd3f5f4d65a0b1c61bc35f459b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fuente: {fileID: 738643148}
+  articulacion: 0
+  preset:
+    umbralEntrar: 25
+    umbralSalir: 10
+    anguloReposo: 12
+  ventanaVelocidad: 0.3
+  tiempoQuieto: 0.35
+  fase: 0
+  velocidad: 0
+  angulo: 0
+--- !u!114 &738643148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738643145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9220f519d49e48d289fb6411548d6e86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  medidor: {fileID: 1855800258}
+  simulando: 0
+  velocidadTeclas: 70
+  periodoCiclo: 4
+  anguloMaxSimulado: 120
+  teclaFlexionar: 119
+  teclaExtender: 115
+  desfaseCiclo: 0.5
+  flexionRodilla: 0
+  flexionCadera: 0
+  abduccionCadera: 0
+--- !u!4 &738643149
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738643145}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1265072414
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -317,37 +419,37 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 628923092}
+      addedObject: {fileID: 1265072419}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 628923090}
+      addedObject: {fileID: 1265072417}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 628923091}
+      addedObject: {fileID: 1265072418}
   m_SourcePrefab: {fileID: 100100000, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
---- !u!4 &628923088 stripped
+--- !u!4 &1265072415 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
-  m_PrefabInstance: {fileID: 628923087}
+  m_PrefabInstance: {fileID: 1265072414}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &628923089 stripped
+--- !u!1 &1265072416 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
-  m_PrefabInstance: {fileID: 628923087}
+  m_PrefabInstance: {fileID: 1265072414}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &628923090
+--- !u!114 &1265072417
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628923089}
+  m_GameObject: {fileID: 1265072416}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e8b0b9f38e94740b62da0bf83835d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuente: {fileID: 925637386}
+  fuente: {fileID: 738643148}
   clip: {fileID: -3982969916959432737, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
   huesoMuslo: Leg_Upper.R
   huesoPierna: Leg_Knee.R
@@ -362,20 +464,20 @@ MonoBehaviour:
   anguloMaxClip: 0
   tFinFlexion: 1
   mapeoMedido: 0
---- !u!114 &628923091
+--- !u!114 &1265072418
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628923089}
+  m_GameObject: {fileID: 1265072416}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0f804443f6447bca5b618cf34abe1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clasificador: {fileID: 925637385}
-  modelo: {fileID: 628923088}
+  clasificador: {fileID: 738643147}
+  modelo: {fileID: 1265072415}
   musculos:
   - malla: Biceps_Femoris_Long_Head_R
     fase: 1
@@ -410,14 +512,14 @@ MonoBehaviour:
   intensidadSostenido: 0.45
   suavizado: 6
   umbralNombre: 0.15
---- !u!95 &628923092
+--- !u!95 &1265072419
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628923089}
+  m_GameObject: {fileID: 1265072416}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 3f547776e55eb4d42a6d9c50aacdeef7, type: 2}
@@ -431,107 +533,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &925637383
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 925637387}
-  - component: {fileID: 925637386}
-  - component: {fileID: 925637385}
-  - component: {fileID: 925637384}
-  m_Layer: 0
-  m_Name: ARMyo_Fase3_Izquierda
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &925637384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 925637383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66e823b34b514e56ad07e7b8904da85f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clasificador: {fileID: 925637385}
-  intensidad: {fileID: 628923091}
-  fuente: {fileID: 925637386}
-  pierna: {fileID: 628923090}
-  mostrar: 1
-  titulo: Rodilla izquierda
-  ladoDerechoPantalla: 1
-  margenSuperior: 220
-  ayudaTeclas: W/S simular   Espacio ciclo   K volver al Kinect
---- !u!114 &925637385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 925637383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffee18cd3f5f4d65a0b1c61bc35f459b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fuente: {fileID: 925637386}
-  articulacion: 0
-  preset:
-    umbralEntrar: 25
-    umbralSalir: 10
-    anguloReposo: 12
-  ventanaVelocidad: 0.3
-  tiempoQuieto: 0.35
-  fase: 0
-  velocidad: 0
-  angulo: 0
---- !u!114 &925637386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 925637383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9220f519d49e48d289fb6411548d6e86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  medidor: {fileID: 1855800258}
-  simulando: 0
-  velocidadTeclas: 70
-  periodoCiclo: 4
-  anguloMaxSimulado: 120
-  teclaFlexionar: 119
-  teclaExtender: 115
-  desfaseCiclo: 0.5
-  flexionRodilla: 0
-  flexionCadera: 0
-  abduccionCadera: 0
---- !u!4 &925637387
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 925637383}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1474759467
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,7 +831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e8b0b9f38e94740b62da0bf83835d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuente: {fileID: 1643509932}
+  fuente: {fileID: 1825704045}
   clip: {fileID: -3982969916959432737, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
   huesoMuslo: Leg_Upper.R
   huesoPierna: Leg_Knee.R
@@ -857,7 +858,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0f804443f6447bca5b618cf34abe1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clasificador: {fileID: 1643509931}
+  clasificador: {fileID: 1825704044}
   modelo: {fileID: 1610545154}
   musculos:
   - malla: Biceps_Femoris_Long_Head_R
@@ -893,7 +894,7 @@ MonoBehaviour:
   intensidadSostenido: 0.45
   suavizado: 6
   umbralNombre: 0.15
---- !u!1 &1643509929
+--- !u!1 &1825704042
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -901,10 +902,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1643509933}
-  - component: {fileID: 1643509932}
-  - component: {fileID: 1643509931}
-  - component: {fileID: 1643509930}
+  - component: {fileID: 1825704046}
+  - component: {fileID: 1825704045}
+  - component: {fileID: 1825704044}
+  - component: {fileID: 1825704043}
   m_Layer: 0
   m_Name: ARMyo_Fase3_Derecha
   m_TagString: Untagged
@@ -912,40 +913,41 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1643509930
+--- !u!114 &1825704043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1643509929}
+  m_GameObject: {fileID: 1825704042}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66e823b34b514e56ad07e7b8904da85f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clasificador: {fileID: 1643509931}
+  clasificador: {fileID: 1825704044}
   intensidad: {fileID: 1610545156}
-  fuente: {fileID: 1643509932}
+  fuente: {fileID: 1825704045}
   pierna: {fileID: 1610545155}
   mostrar: 1
   titulo: Rodilla derecha
-  ladoDerechoPantalla: 0
-  margenSuperior: 10
+  anclaPantalla: {x: 0, y: 0}
+  pivote: {x: 0, y: 0}
+  desplazamiento: {x: 10, y: 10}
   ayudaTeclas: "\u2191/\u2193 simular   Espacio ciclo   K volver al Kinect"
---- !u!114 &1643509931
+--- !u!114 &1825704044
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1643509929}
+  m_GameObject: {fileID: 1825704042}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ffee18cd3f5f4d65a0b1c61bc35f459b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuente: {fileID: 1643509932}
+  fuente: {fileID: 1825704045}
   articulacion: 0
   preset:
     umbralEntrar: 25
@@ -956,13 +958,13 @@ MonoBehaviour:
   fase: 0
   velocidad: 0
   angulo: 0
---- !u!114 &1643509932
+--- !u!114 &1825704045
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1643509929}
+  m_GameObject: {fileID: 1825704042}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9220f519d49e48d289fb6411548d6e86, type: 3}
@@ -979,13 +981,13 @@ MonoBehaviour:
   flexionRodilla: 0
   flexionCadera: 0
   abduccionCadera: 0
---- !u!4 &1643509933
+--- !u!4 &1825704046
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1643509929}
+  m_GameObject: {fileID: 1825704042}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1245,7 +1247,7 @@ SceneRoots:
   - {fileID: 1610545150}
   - {fileID: 1977619620}
   - {fileID: 1565764051}
-  - {fileID: 628923087}
   - {fileID: 1855800260}
-  - {fileID: 1643509933}
-  - {fileID: 925637387}
+  - {fileID: 1265072414}
+  - {fileID: 1825704046}
+  - {fileID: 738643149}

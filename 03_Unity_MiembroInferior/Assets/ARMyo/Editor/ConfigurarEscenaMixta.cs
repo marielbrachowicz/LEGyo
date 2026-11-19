@@ -5,16 +5,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using com.rfilkov.kinect;
 using ARMyo.Anatomia;
+using ARMyo.Biomecanica;
 using ARMyo.Mixta;
 
 namespace ARMyo.EditorTools
 {
     /// <summary>
     /// Menú "ARMyo → 4. Crear escena mixta (cámara | modelo)".
-    /// Copia PruebaPierna (ya con las dos piernas del menú 3) en EscenaMixta y la divide en dos:
-    ///   · Mitad izquierda → imagen en color del Kinect (la "mitad real" del espejo)
-    ///   · Mitad derecha   → las dos piernas virtuales con sus músculos
-    /// Activa la imagen en color en el KinectManager y recoloca los paneles sobre la mitad del modelo.
+    /// Copia PruebaPierna (ya con las dos piernas del menú 3) en EscenaMixta y la divide en tres columnas:
+    ///   · 0–45 %   → imagen en color del Kinect, en espejo (la "mitad real")
+    ///   · 45–75 %  → las dos piernas virtuales con sus músculos
+    ///   · 75–100 % → los paneles (Kinect, rodilla derecha, rodilla izquierda), uno debajo de otro
+    /// Activa la imagen en color en el KinectManager.
     /// PruebaPierna no se toca. Se puede ejecutar varias veces: rehace EscenaMixta desde PruebaPierna.
     /// </summary>
     public static class ConfigurarEscenaMixta
@@ -46,9 +48,23 @@ namespace ARMyo.EditorTools
             if (km != null) km.getColorFrames = KinectManager.ColorTextureType.ColorTexture;
             else aviso += "\n⚠ No hay KinectController en la escena (menú ARMyo → 2): la mitad de la cámara se verá en negro.\n";
 
-            // ── Cámara 3D: solo la mitad derecha ──────────
+            // ── Columnas ──────────────────────────────────
+            const float finCamara = 0.45f, finModelo = 0.75f;
+
+            // Cámara 3D: solo la columna del modelo, encuadrando las dos piernas
             var cam = UnityEngine.Camera.main;
-            if (cam != null) cam.rect = new Rect(0.5f, 0f, 0.5f, 1f);
+            if (cam != null)
+            {
+                cam.rect = new Rect(finCamara, 0f, finModelo - finCamara, 1f);
+                if (!cam.TryGetComponent(out EncuadrarModelo encuadre))
+                    encuadre = cam.gameObject.AddComponent<EncuadrarModelo>();
+                encuadre.modelos.Clear();
+                foreach (var n in new[] { "Pierna_Derecha", "Pierna_Izquierda" })
+                {
+                    var go = GameObject.Find(n);
+                    if (go != null) encuadre.modelos.Add(go);
+                }
+            }
 
             // ── Mitad real: imagen del Kinect ─────────────
             var canvasGo = new GameObject("ARMyo_VistaMixta", typeof(Canvas), typeof(CanvasScaler));
@@ -60,7 +76,7 @@ namespace ARMyo.EditorTools
             scaler.matchWidthOrHeight = 1f;
 
             var mitad = NuevoUI("MitadReal", canvasGo.transform);
-            Estirar(mitad, new Vector2(0f, 0f), new Vector2(0.5f, 1f));
+            Estirar(mitad, new Vector2(0f, 0f), new Vector2(finCamara, 1f));
             mitad.gameObject.AddComponent<Image>().color = Color.black;
             mitad.gameObject.AddComponent<RectMask2D>();
 
@@ -71,6 +87,7 @@ namespace ARMyo.EditorTools
             fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
             fitter.aspectRatio = 16f / 9f;
             var vista = imgRt.gameObject.AddComponent<VistaCamaraKinect>();
+            vista.espejo = true; // probado: sin esto la imagen salía al revés
 
             var avisoRt = NuevoUI("Aviso", mitad);
             Estirar(avisoRt, Vector2.zero, Vector2.one);
@@ -82,13 +99,18 @@ namespace ARMyo.EditorTools
             txt.color = new Color(1f, 1f, 1f, 0.6f);
             vista.avisoSinImagen = txt;
 
-            // ── Paneles sobre la mitad del modelo ─────────
-            // Pierna derecha a la izquierda del modelo (se ve de frente), izquierda a la derecha.
+            // ── Paneles: columna de la derecha, uno debajo de otro ──
+            var arribaDerecha = new Vector2(1f, 0f);
+            foreach (var m in Object.FindObjectsOfType<MedidorAngulosPierna>(true))
+            {
+                m.anclaPantalla = arribaDerecha; m.pivote = arribaDerecha; m.desplazamiento = new Vector2(-20f, 10f);
+                EditorUtility.SetDirty(m);
+            }
             foreach (var p in paneles)
             {
                 bool derecha = p.gameObject.name.EndsWith("Derecha");
-                if (derecha) p.Colocar(new Vector2(0.5f, 1f), new Vector2(0f, 1f), new Vector2(10f, -10f));
-                else         p.Colocar(new Vector2(1f, 1f),   new Vector2(1f, 1f), new Vector2(-10f, -10f));
+                p.Colocar(arribaDerecha, arribaDerecha, new Vector2(-20f, derecha ? 220f : 500f));
+                EditorUtility.SetDirty(p);
             }
 
             EditorSceneManager.MarkSceneDirty(scene);
@@ -98,7 +120,7 @@ namespace ARMyo.EditorTools
 
             Debug.Log("[ARMyo] Escena mixta creada: " + Destino);
             EditorUtility.DisplayDialog("ARMyo",
-                "Listo. Se creó la escena EscenaMixta:\n  izquierda = tu imagen del Kinect\n  derecha = las dos piernas virtuales\n" + aviso +
+                "Listo. Se creó la escena EscenaMixta:\n  izquierda = tu imagen del Kinect (en espejo)\n  centro = las dos piernas virtuales\n  derecha = los paneles\n" + aviso +
                 "\nPulsa ▶ Play (mejor con 'Play Maximized').\n  E = invertir la imagen si no se ve como un espejo\n" +
                 "  ↑/↓, W/S, Espacio, K = igual que antes", "OK");
         }
