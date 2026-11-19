@@ -1,0 +1,16 @@
+﻿DONDE VA CADA SCRIPT (dentro del proyecto Unity 03_Unity_MiembroInferior):
+
+  Editor\ConfigurarPierna.cs                 ->  Assets\ARMyo\Editor\
+  Editor\ConfigurarKinect.cs                 ->  Assets\ARMyo\Editor\
+  Scripts\PruebaAnimacionesPierna.cs         ->  Assets\ARMyo\Scripts\
+  Scripts\Core\LegBodyFrame.cs               ->  Assets\ARMyo\Scripts\Core\
+  Scripts\Core\CircularBuffer.cs             ->  Assets\ARMyo\Scripts\Core\
+  Scripts\Sensores\KinectBridgePierna.cs     ->  Assets\ARMyo\Scripts\Sensores\
+  Scripts\Biomecanica\MedidorAngulosPierna.cs -> Assets\ARMyo\Scripts\Biomecanica\
+
+Importante: los scripts de "Editor" TIENEN que estar dentro de una carpeta llamada "Editor".
+
+Luego, en Unity:
+  1. Menu ARMyo -> 1. Configurar modelo de pierna   (crea la escena PruebaPierna)
+  2. Menu ARMyo -> 2. Anadir Kinect v2 a la escena  (anade el sensor y la medicion de angulos)
+  3. Play, de frente al Kinect a 2-3 m: los angulos salen arriba a la derecha.

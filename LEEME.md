@@ -1,0 +1,129 @@
+# ARMyo Mirror – Miembro Inferior
+
+Visualizador muscular interactivo con realidad aumentada (Magic Mirror) para el miembro inferior: cadera, rodilla y pie.
+Se construye tomando como base el proyecto ARMyo de **miembro superior**.
+
+Propuesta original: [00_Documentacion/Propuesta_ARMyo_MiembroInferior.webp](00_Documentacion/Propuesta_ARMyo_MiembroInferior.webp)
+
+---
+
+## 1. Estructura de la carpeta
+
+```
+ARMyo_Mirror/
+├── LEEME.md                         ← este archivo
+├── 00_Documentacion/                ← propuesta, informes, notas
+├── 01_Referencia_MiembroSuperior/   ← proyecto Unity del brazo (SOLO CONSULTA, no se modifica)
+├── 02_Modelos3D/
+│   ├── PiernaAnimada/               ← MODELO PRINCIPAL: PIERNA.fbx + texturas
+│   └── CuerpoCompleto_Rigged/       ← Color_Muscular_System_Rigged.fbx (cuerpo completo)
+├── 03_Unity_MiembroInferior/        ← NUESTRO proyecto Unity (aquí se trabaja)
+└── _Descargas_originales/           ← los .zip tal como se descargaron (respaldo)
+```
+
+## 2. Cómo se relacionan los archivos
+
+| Archivo | Qué es | Para qué sirve |
+|---|---|---|
+| **ARMyOMagicMirror_MiembroSuperior** (→ `01_`) | Proyecto Unity terminado del brazo (Grupo 4) | Es la **plantilla**: su código se adapta de brazo a pierna |
+| **PiernaAnimada** (→ `02_/PiernaAnimada`) | Modelo anatómico (huesos + músculos) con **9 animaciones** ya hechas | Es el **modelo 3D de la mitad virtual** |
+| **Color_Muscular_System_Rigged.fbx** (→ `02_/CuerpoCompleto_Rigged`) | Cuerpo completo con rig. Es **idéntico** al que usa el proyecto del brazo | Base de la que sale la pierna. Sirve de respaldo |
+| **Proyecto_1_ARMyo** (→ `03_`) | Proyecto Unity vacío con el paquete Azure Kinect Examples | Aquí se construye la versión de pierna |
+
+Las texturas `Ecorche_*.png` son las mismas en los tres: todos vienen del mismo modelo anatómico.
+
+### Animaciones que trae `PIERNA.fbx`
+| # | Animación | Músculos principales (agonistas) |
+|---|---|---|
+| 0 | IDLE_DESCANSO | – |
+| 1 | FLEXION_CADERA | Psoas mayor, ilíaco, recto femoral, sartorio, tensor de la fascia lata |
+| 2 | EXTENSION_CADERA | Glúteo mayor, bíceps femoral (cabeza larga), semitendinoso, semimembranoso |
+| 3 | ABDUCCION_CADERA | Glúteo medio, glúteo menor, tensor de la fascia lata |
+| 4 | ADUCCION_CADERA | Aductor largo, aductor corto, aductor mayor, grácil, pectíneo |
+| 5 | FLEXION_RODILLA | Bíceps femoral, semitendinoso, semimembranoso, gastrocnemio, grácil, sartorio |
+| 6 | EXTENSION_RODILLA | Cuádriceps: recto femoral, vasto lateral, vasto medial, vasto intermedio |
+| 7 | ROTACION_INTERNA_CADERA | Glúteo medio y menor (fibras anteriores), tensor de la fascia lata |
+| 8 | ROTACION_EXTERNA_CADERA | Glúteo mayor, sartorio (y rotadores profundos, que no están en el modelo) |
+
+El modelo tiene **todos estos músculos como piezas separadas** (por ejemplo `Rectus_Femoris_R` o `Vastus_Lateralis_R`), así que cada uno se puede colorear por separado.
+Además trae la rótula (`Patella_R`), el ligamento rotuliano, el fémur, la tibia, el peroné y los huesos del pie.
+
+## 3. Cómo funciona el proyecto del brazo (lo que vamos a copiar)
+
+Código propio en `01_Referencia_MiembroSuperior/Assets/Scripts_Mixto/`:
+
+```
+Kinect ─► KinectBridge ─► JointAngleMeasurer ─► MovementClassifier ─► texto "Flexión / Extensión"
+            (lee joints)     (calcula ángulo)          │
+                                                      ├─► MuscleIntensityByAngle ─► color del músculo
+                                                      └─► MuscleAnatomyData / AnatomyUIManager ─► nombres en pantalla
+          ArmInspectCamera (gesto: mano derecha toca el brazo izq. 1.5 s) ─► ZoneSessionController ─► zoom a hombro/codo/muñeca
+```
+
+### Adaptación brazo → pierna
+
+| Script del brazo | Qué hace | Cambio para la pierna |
+|---|---|---|
+| `KinectBridge` + `ArmBodyFrame` | Lee hombro, codo y muñeca | Leer **cadera, rodilla, tobillo y pie** (`HipLeft/Right`, `KneeLeft/Right`, `AnkleLeft/Right`, `FootLeft/Right`) → `LegBodyFrame` |
+| `JointAngleMeasurer` | Ángulo hombro–codo–muñeca | Ángulo **cadera–rodilla–tobillo**. Plano **YZ (sagital)**, porque la rodilla se flexiona hacia atrás |
+| `MovementClassifier` | Flexión/extensión según la velocidad | Casi igual. Agregar presets de rodilla y cadera |
+| `MuscleIntensityByAngle` | Músculo más rojo según el ángulo | Igual. Solo se reconfiguran los rangos |
+| `MuscleAnatomyData` | Nombre y acción de cada músculo | Igual, con los datos de la tabla de arriba |
+| `ArmZoneType` | Hombro / Codo / Muñeca | `LegZoneType`: **Cadera / Rodilla / Tobillo** |
+| `ArmInspectCamera` | Gesto: la mano toca el brazo | La **mano contraria toca el muslo o la rodilla** (al tobillo no se llega de pie) |
+| `ForearmController`, `ShoulderAbductionMeasurer` | Específicos del brazo | Reemplazar por un medidor de **abducción de cadera** |
+| `FreezeHips`, `CircularBuffer`, `JointFollower`, `MuscleLabel*` | Utilidades | Se pueden reutilizar casi sin cambios |
+
+Escenas del brazo: `EscenaPrincipal` (menú), `EscenaMixta` (la mitad real y la mitad virtual que pide la propuesta), `EscenaAR` y `EscenaVR`.
+
+## 4. Estado del equipo (revisado el 06/11/2026)
+
+| Elemento | Estado |
+|---|---|
+| Kinect for Windows SDK 2.0 | ✅ Instalado |
+| Unity **2022.3.62f1** (la versión de ambos proyectos) | ❌ **Falta**. Solo está Unity 6 (6000.6.8f1) |
+| Blender | ❌ No encontrado |
+| Editor de código (VS Code o Visual Studio) | ❌ No encontrado (el instalador de VS Code está en Descargas) |
+| Kinect v2 conectado | ⚠️ No detectado ahora mismo |
+| Tarjeta gráfica | Intel integrada. Sirve para **Kinect v2**, pero **no** para el body tracking de Azure Kinect, que necesita NVIDIA |
+
+## 5. Para quien continúa el trabajo (desde GitHub)
+
+1. Instala **Unity 2022.3.62f3**, exactamente esa versión, y el **Kinect for Windows SDK 2.0**.
+2. Clona el repositorio y abre la carpeta `03_Unity_MiembroInferior` desde Unity Hub. La primera vez tarda porque se regenera la carpeta `Library`.
+3. Abre `Assets/ARMyo/Scenes/PruebaPierna` y dale a **Play**, de frente al Kinect v2, a 2–3 m. Los ángulos aparecen arriba a la derecha.
+   - Si la escena no tiene `KinectController`, usa el menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
+   - Teclas: **0–8** cambian la animación, **R** reinicia el máximo y **P** copia los datos crudos a la Console.
+4. Lo que **no** está en GitHub porque pesa demasiado, y se pide aparte (USB, Drive…):
+   - `01_Referencia_MiembroSuperior/`: el proyecto del brazo, que sirve de plantilla para la Fase 3 (`MovementClassifier`, `MuscleIntensityByAngle`, `MuscleAnatomyData`).
+   - `02_Modelos3D/`: el modelo del cuerpo completo, que es solo de respaldo. `PIERNA.fbx` ya está dentro de `Assets`.
+   - `onnxruntime_providers_cuda.dll`, que solo hace falta para Azure Kinect, no para Kinect v2.
+5. **Siguiente paso: la Fase 3.** La pierna 3D debe imitar en vivo el ángulo del usuario, y sus músculos deben colorearse según el movimiento. Las fuentes de datos ya existen: `MedidorAngulosPierna` publica `OnAngulosCambiados(rodilla, flexiónCadera, abducciónCadera)` y expone las propiedades `FlexionRodilla`, `FlexionCadera` y `AbduccionCadera`.
+
+## 6. Lo que falta (checklist)
+
+### Instalación
+- [ ] Instalar **Unity 2022.3.62f1** desde Unity Hub (Installs → Install Editor → Archive). No abrir los proyectos con Unity 6.
+- [ ] Instalar **VS Code** + extensión "Unity" (o Visual Studio Community con "Desarrollo de juegos con Unity").
+- [ ] Instalar **Blender** (solo si hay que retocar animaciones o shape keys).
+- [ ] Conectar el **Kinect v2** con su adaptador para PC y probarlo en *Kinect Studio* o en *SDK Browser v2.0*.
+
+### Decisiones pendientes
+- [ ] **Sensor**: el proyecto del brazo está configurado para **Azure Kinect** y la propuesta dice **Kinect v2**. Con este PC, lo viable es Kinect v2.
+- [ ] **Pierna**: ¿solo la derecha (el modelo está completo en `_R`) o las dos?
+- [ ] **Pie**: la propuesta lo menciona, pero `PIERNA.fbx` **no trae animaciones de tobillo** (dorsiflexión y plantiflexión). Hay que hacerlas en Blender o dejarlas fuera del alcance.
+- [ ] **Gesto de activación**: qué hace exactamente la mano contraria (tocar el muslo, levantar la mano, cerrar el puño).
+- [x] **Animación**: decidido el 19/11/2026. El modelo debe seguir el ángulo real del usuario **en vivo**, por ejemplo avanzando cada animación según el ángulo medido.
+
+### Desarrollo en `03_Unity_MiembroInferior`
+- [x] Fase 0: abrir el proyecto en 2022.3.62f3 y probar una demo del paquete con el Kinect v2 (19/11/2026: funciona con `Kinect2Interface` en *Connected Sensor*).
+- [x] Fase 1: importar `PIERNA.fbx` y sus texturas, y comprobar las 9 animaciones (menú **ARMyo → 1**).
+- [x] Fase 2: portar `KinectBridge` → versión pierna y medir el **ángulo de rodilla en vivo**. Probado con el sensor el 19/11/2026: mide bien de pie a unos 2–3 m. Si el usuario se acerca demasiado, las piernas salen del campo de visión y se deja de medir, lo cual es normal en el Kinect v2.
+  - `Scripts/Core/LegBodyFrame.cs`: joints de la pierna y cálculo de la flexión de rodilla (3D), la flexión de cadera (plano YZ) y la abducción de cadera (plano XY).
+  - `Scripts/Sensores/KinectBridgePierna.cs`: lee el Kinect y publica un `LegBodyFrame` en cada frame. Se elige la pierna derecha o la izquierda.
+  - `Scripts/Biomecanica/MedidorAngulosPierna.cs`: suaviza los ángulos y los muestra en pantalla.
+  - `Editor/ConfigurarKinect.cs`: menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
+- [ ] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender.
+- [ ] Fase 4: escena mixta (mitad real con el espejo, mitad virtual con el modelo) y la ventana AR sobre la rodilla.
+- [ ] Fase 5: gesto de la mano contraria + nombres de los músculos por fase.
+- [ ] Fase 6: cadera (flexión/extensión, abducción/aducción, rotaciones).

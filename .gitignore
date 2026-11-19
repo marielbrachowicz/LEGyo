@@ -1,3 +1,4 @@
+# ── Unity (reglas originales del repo, por si el proyecto está en la raíz) ──
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -26,3 +27,28 @@
 *.unitypackage
 sysinfo.txt
 .DS_Store
+
+# ── Unity: el proyecto está en la subcarpeta 03_Unity_MiembroInferior ──
+/03_Unity_MiembroInferior/[Ll]ibrary/
+/03_Unity_MiembroInferior/[Tt]emp/
+/03_Unity_MiembroInferior/[Oo]bj/
+/03_Unity_MiembroInferior/[Bb]uild/
+/03_Unity_MiembroInferior/[Bb]uilds/
+/03_Unity_MiembroInferior/[Ll]ogs/
+/03_Unity_MiembroInferior/[Uu]ser[Ss]ettings/
+/03_Unity_MiembroInferior/[Mm]emoryCaptures/
+/03_Unity_MiembroInferior/[Rr]ecordings/
+
+# ── Carpetas que NO se suben (muy pesadas; se comparten aparte) ──
+/01_Referencia_MiembroSuperior/
+/02_Modelos3D/
+/_Descargas_originales/
+
+# ── Archivo de más de 100 MB: GitHub no lo acepta ──
+# Solo lo usa el body tracking de Azure Kinect (necesita NVIDIA). Con Kinect v2 no hace falta.
+onnxruntime_providers_cuda.dll
+onnxruntime_providers_cuda.dll.meta
+
+# Sistema
+Thumbs.db
+Desktop.ini
