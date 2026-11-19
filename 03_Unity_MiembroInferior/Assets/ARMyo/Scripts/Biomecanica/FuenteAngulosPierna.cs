@@ -7,9 +7,9 @@ namespace ARMyo.Biomecanica
     /// · Con Kinect: copia los valores de MedidorAngulosPierna (evento OnAngulosCambiados).
     /// · Sin Kinect: simula el ángulo de rodilla con el teclado.
     ///
-    /// Teclas:
+    /// Teclas (configurables; por defecto pierna derecha ↑/↓, izquierda W/S):
     ///   ↑ / ↓   flexionar / extender a mano (activa la simulación)
-    ///   Espacio ciclo automático flexión ↔ extensión (activa la simulación)
+    ///   Espacio ciclo automático flexión ↔ extensión en las dos piernas (la izquierda desfasada)
     ///   K       volver a los datos del Kinect
     /// </summary>
     public class FuenteAngulosPierna : MonoBehaviour
@@ -24,6 +24,10 @@ namespace ARMyo.Biomecanica
         [Tooltip("Duración (s) de un ciclo completo flexión + extensión con Espacio.")]
         public float periodoCiclo = 4f;
         public float anguloMaxSimulado = 120f;
+        public KeyCode teclaFlexionar = KeyCode.UpArrow;
+        public KeyCode teclaExtender = KeyCode.DownArrow;
+        [Tooltip("Desfase del ciclo automático (0–1). 0.5 en la pierna izquierda = piernas alternadas.")]
+        [Range(0f, 1f)] public float desfaseCiclo;
 
         [Header("Resultado (solo lectura)")]
         [SerializeField] float flexionRodilla;
@@ -64,8 +68,8 @@ namespace ARMyo.Biomecanica
 
         void Update()
         {
-            bool arriba = Input.GetKey(KeyCode.UpArrow);
-            bool abajo  = Input.GetKey(KeyCode.DownArrow);
+            bool arriba = Input.GetKey(teclaFlexionar);
+            bool abajo  = Input.GetKey(teclaExtender);
 
             if (arriba || abajo)
             {
@@ -79,8 +83,10 @@ namespace ARMyo.Biomecanica
             {
                 simulando = true;
                 _ciclo = !_ciclo;
-                // Arrancar el ciclo desde el ángulo actual para que no salte
-                _faseCiclo = Mathf.Acos(Mathf.Clamp(1f - 2f * flexionRodilla / anguloMaxSimulado, -1f, 1f)) / (2f * Mathf.PI);
+                // Arrancar el ciclo desde el ángulo actual para que no salte (o con el desfase fijo)
+                _faseCiclo = desfaseCiclo > 0f
+                    ? desfaseCiclo
+                    : Mathf.Acos(Mathf.Clamp(1f - 2f * flexionRodilla / anguloMaxSimulado, -1f, 1f)) / (2f * Mathf.PI);
             }
 
             if (Input.GetKeyDown(KeyCode.K) && medidor != null)

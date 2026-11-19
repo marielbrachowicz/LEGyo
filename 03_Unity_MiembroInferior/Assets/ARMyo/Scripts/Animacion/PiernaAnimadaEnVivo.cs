@@ -16,6 +16,10 @@ namespace ARMyo.Animacion
     /// tiempo de la animación corresponde a cada ángulo, aunque el clip no sea lineal o
     /// flexione y vuelva. Si no se encuentran los huesos, se usa un mapeo lineal.
     ///
+    /// El clip solo flexiona la rodilla hasta ~88°. Por encima, la rodilla del modelo se sigue
+    /// doblando por código (girando el hueso de la pierna sobre el mismo eje que usa el clip),
+    /// hasta anguloMaxModelo. Así no hace falta retocar la animación en Blender.
+    ///
     /// Usa un PlayableGraph en modo manual: no depende del Animator Controller ni de los
     /// nombres de sus estados. El controller se desactiva mientras este script está activo.
     /// </summary>
@@ -41,6 +45,12 @@ namespace ARMyo.Animacion
         [Tooltip("Muestras para medir el clip.")]
         [Range(16, 256)] public int muestras = 96;
 
+        [Header("Más allá del clip")]
+        [Tooltip("Seguir doblando la rodilla por código cuando el ángulo supera el máximo del clip.")]
+        public bool extenderMasAllaDelClip = true;
+        [Tooltip("Flexión máxima que puede mostrar el modelo (°).")]
+        [Range(90f, 160f)] public float anguloMaxModelo = 135f;
+
         [Header("Suavizado visual")]
         [Tooltip("Tiempo (s) para alcanzar el ángulo medido. 0 = sin suavizado.")]
         [Range(0f, 0.5f)] public float suavizado = 0.08f;
@@ -54,6 +64,8 @@ namespace ARMyo.Animacion
 
         public float AnguloMostrado => anguloMostrado;
         public float AnguloMaxClip => anguloMaxClip;
+        /// <summary>Flexión máxima que el modelo puede mostrar (clip + extensión por código).</summary>
+        public float AnguloMaxAlcanzable => mapeoMedido && extenderMasAllaDelClip ? Mathf.Max(anguloMaxClip, anguloMaxModelo) : anguloMaxClip;
 
         Animator _animator;
         RuntimeAnimatorController _controllerOriginal;
@@ -62,6 +74,8 @@ namespace ARMyo.Animacion
         float[] _tablaAngulo;   // ángulo del modelo (monótono creciente) en cada muestra del tramo de flexión
         float[] _tablaTiempo;   // tiempo normalizado de esa muestra
         float _vel;
+        Transform _pierna;          // hueso de la pierna (se gira por código más allá del clip)
+        Vector3 _ejeFlexionLocal;   // eje de flexión de la rodilla en el espacio local de ese hueso
 
         void Awake()
         {
@@ -122,6 +136,14 @@ namespace ARMyo.Animacion
         {
             tiempoNormalizado = AnguloATiempo(angulo);
             EvaluarEn(tiempoNormalizado);
+
+            // Más allá del clip: girar el hueso de la pierna sobre el eje de flexión
+            if (extenderMasAllaDelClip && mapeoMedido && _pierna != null && angulo > anguloMaxClip)
+            {
+                float extra = Mathf.Min(angulo, anguloMaxModelo) - anguloMaxClip;
+                if (extra > 0f)
+                    _pierna.localRotation = _pierna.localRotation * Quaternion.AngleAxis(extra, _ejeFlexionLocal);
+            }
         }
 
         void EvaluarEn(float tNorm)
@@ -201,6 +223,17 @@ namespace ARMyo.Animacion
                 _tablaTiempo[i] = (float)i / muestras;
             }
             mapeoMedido = true;
+
+            // Eje de flexión: el giro local del hueso de la pierna entre el inicio y la flexión máxima
+            EvaluarEn(0f);
+            Quaternion local0 = pierna.localRotation;
+            EvaluarEn(tFinFlexion);
+            Quaternion localMax = pierna.localRotation;
+            (Quaternion.Inverse(local0) * localMax).ToAngleAxis(out float giro, out _ejeFlexionLocal);
+            _pierna = giro > 1f ? pierna : null;
+            if (_pierna == null)
+                Debug.LogWarning("[PiernaAnimadaEnVivo] No se pudo calcular el eje de la rodilla: " +
+                                 "el modelo no pasará del máximo del clip.", this);
 
             Debug.Log($"[PiernaAnimadaEnVivo] Clip '{clip.name}' medido: {clip.length:F2} s, flexión máxima del modelo " +
                       $"{anguloMaxClip:F1}° en t = {tFinFlexion:F2}. Ángulos por cuartos: " +

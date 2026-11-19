@@ -98,7 +98,7 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
 3. Abre `Assets/ARMyo/Scenes/PruebaPierna` y dale a **Play**, de frente al Kinect v2, a 2–3 m. Los ángulos aparecen arriba a la derecha.
    - Si la escena no tiene `KinectController`, usa el menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
    - Teclas: **0–8** cambian la animación, **R** reinicia el máximo y **P** copia los datos crudos a la Console.
-   - Fase 3: menú **ARMyo → 3. Añadir animación en vivo**. Desde ese momento la pierna sigue tu rodilla y las teclas 0–8 quedan desactivadas. Sin Kinect: **↑/↓** simulan el ángulo, **Espacio** hace un ciclo automático y **K** vuelve al Kinect.
+   - Fase 3: menú **ARMyo → 3. Añadir animación en vivo (dos piernas)**. Desde ese momento cada pierna sigue su rodilla y las teclas 0–8 quedan desactivadas. Sin Kinect: **↑/↓** mueven la pierna derecha, **W/S** la izquierda, **Espacio** hace un ciclo automático con las piernas alternadas y **K** vuelve al Kinect.
 4. Lo que **no** está en GitHub porque pesa demasiado, y se pide aparte (USB, Drive…):
    - `01_Referencia_MiembroSuperior/`: **obligatoria** (ver el paso 0). Es el proyecto del brazo, que sirve de plantilla para la Fase 3 (`MovementClassifier`, `MuscleIntensityByAngle`, `MuscleAnatomyData`).
    - `02_Modelos3D/`: el modelo del cuerpo completo, que es solo de respaldo. `PIERNA.fbx` ya está dentro de `Assets`.
@@ -116,9 +116,9 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
 
 ### Decisiones pendientes
 - [x] **Sensor**: decidido **Kinect v2**. Es el que pide la propuesta y el único viable con gráfica Intel. El proyecto del brazo usaba Azure Kinect.
-- [ ] **Pierna**: ¿solo la derecha (el modelo está completo en `_R`) o las dos?
+- [x] **Pierna**: decidido el 19/11/2026, **las dos**, juntas como en un cuerpo completo. La izquierda es una copia en espejo de `PIERNA.fbx`, porque el modelo solo trae la derecha.
 - [ ] **Pie**: la propuesta lo menciona, pero `PIERNA.fbx` **no trae animaciones de tobillo** (dorsiflexión y plantiflexión). Hay que hacerlas en Blender o dejarlas fuera del alcance.
-- [ ] **Gesto de activación**: qué hace exactamente la mano contraria (tocar el muslo, levantar la mano, cerrar el puño).
+- [x] **Gesto de activación**: decidido el 19/11/2026 (lo pidió el profesor): **por voz**, no con la mano. Falta definir qué palabras se usan y qué hace cada una.
 - [x] **Animación**: decidido el 19/11/2026. El modelo debe seguir el ángulo real del usuario **en vivo**, por ejemplo avanzando cada animación según el ángulo medido.
 
 ### Desarrollo en `03_Unity_MiembroInferior`
@@ -129,7 +129,9 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
   - `Scripts/Sensores/KinectBridgePierna.cs`: lee el Kinect y publica un `LegBodyFrame` en cada frame. Se elige la pierna derecha o la izquierda.
   - `Scripts/Biomecanica/MedidorAngulosPierna.cs`: suaviza los ángulos y los muestra en pantalla.
   - `Editor/ConfigurarKinect.cs`: menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
-- [x] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender. **Probado con el Kinect v2 el 19/11/2026** (rama `fase3-animacion`): la pierna 3D sigue la rodilla casi sin retraso y reconoce flexión y extensión. Límite: el clip `FLEXION_RODILLA` solo llega a **88°**, así que por encima de ese ángulo el modelo se queda en 88°. Para llegar a 120° hay que retocar la animación en Blender.
+- [x] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender. **Probado con el Kinect v2 el 19/11/2026** (rama `fase3-animacion`): la pierna 3D sigue la rodilla casi sin retraso y reconoce flexión y extensión. El clip `FLEXION_RODILLA` solo llega a **88°**.
+  - **Dos piernas** (rama `ambas-piernas`, falta probarlo en Unity): el menú 3 crea `Pierna_Izquierda` como copia en espejo respecto al sacro. Oculta en la copia la columna y el suelo pélvico para que no se dibujen dos veces, y añade un segundo `KinectBridgePierna` + `MedidorAngulosPierna` para la pierna izquierda. `KinectBridgePierna` ya no destruye el segundo puente.
+  - **Más de 88° sin Blender**: `PiernaAnimadaEnVivo` sigue doblando la rodilla por código, sobre el eje que usa el clip, hasta `anguloMaxModelo` (135°).
   - `Scripts/Biomecanica/FuenteAngulosPierna.cs`: toma el ángulo de `MedidorAngulosPierna` o lo simula con el teclado (**↑/↓**, **Espacio** = ciclo automático, **K** = volver al Kinect).
   - `Scripts/Biomecanica/MovementClassifier.cs`: flexión / extensión / mantiene / reposo según la velocidad del ángulo, con presets de rodilla y cadera.
   - `Scripts/Animacion/PiernaAnimadaEnVivo.cs`: fija el tiempo de `FLEXION_RODILLA` según el ángulo medido. Al arrancar mide el clip (huesos `Leg_Upper.R` / `Leg_Knee.R`) para que el modelo muestre el mismo ángulo que el usuario.
@@ -137,5 +139,5 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
   - Músculos que se colorean (nombres reales del FBX): flexores `Biceps_Femoris_Long_Head_R`, `Biceps_Femoris_Short_Head_R`, `Semitendinosus_R`, `Semimembranosus_R`, `Gastrocnemius_Lateral_Medial_R`; extensores `Rectus_Femoris_R`, `Vastus_Lateralis_R`, `Vastus_Medialis_R`, `Vastus_Intermedius_R`. Dentro de Unity, la malla que se pinta de cada uno se llama `Nombre.001` (por ejemplo `Rectus_Femoris.001`). **El semitendinoso no tiene malla propia**: sale en pantalla, pero no cambia de color.
   - `Editor/ConfigurarAnimacionEnVivo.cs`: menú **ARMyo → 3. Añadir animación en vivo**.
 - [ ] Fase 4: escena mixta (mitad real con el espejo, mitad virtual con el modelo) y la ventana AR sobre la rodilla.
-- [ ] Fase 5: gesto de la mano contraria + nombres de los músculos por fase.
+- [ ] Fase 5: activación **por voz** (`KeywordRecognizer` de Windows, funciona sin internet) + nombres de los músculos por fase.
 - [ ] Fase 6: cadera (flexión/extensión, abducción/aducción, rotaciones).
