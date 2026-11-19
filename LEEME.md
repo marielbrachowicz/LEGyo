@@ -129,7 +129,7 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
   - `Scripts/Sensores/KinectBridgePierna.cs`: lee el Kinect y publica un `LegBodyFrame` en cada frame. Se elige la pierna derecha o la izquierda.
   - `Scripts/Biomecanica/MedidorAngulosPierna.cs`: suaviza los ángulos y los muestra en pantalla.
   - `Editor/ConfigurarKinect.cs`: menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
-- [ ] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender. **Código hecho el 19/11/2026 en la rama `fase3-animacion`; falta probarlo en Unity.**
+- [x] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender. **Probado con el Kinect v2 el 19/11/2026** (rama `fase3-animacion`): la pierna 3D sigue la rodilla casi sin retraso y reconoce flexión y extensión. Límite: el clip `FLEXION_RODILLA` solo llega a **88°**, así que por encima de ese ángulo el modelo se queda en 88°. Para llegar a 120° hay que retocar la animación en Blender.
   - `Scripts/Biomecanica/FuenteAngulosPierna.cs`: toma el ángulo de `MedidorAngulosPierna` o lo simula con el teclado (**↑/↓**, **Espacio** = ciclo automático, **K** = volver al Kinect).
   - `Scripts/Biomecanica/MovementClassifier.cs`: flexión / extensión / mantiene / reposo según la velocidad del ángulo, con presets de rodilla y cadera.
   - `Scripts/Animacion/PiernaAnimadaEnVivo.cs`: fija el tiempo de `FLEXION_RODILLA` según el ángulo medido. Al arrancar mide el clip (huesos `Leg_Upper.R` / `Leg_Knee.R`) para que el modelo muestre el mismo ángulo que el usuario.
