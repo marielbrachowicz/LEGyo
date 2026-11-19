@@ -76,16 +76,19 @@ Kinect ─► KinectBridge ─► JointAngleMeasurer ─► MovementClassifier �
 
 Escenas del brazo: `EscenaPrincipal` (menú), `EscenaMixta` (la mitad real y la mitad virtual que pide la propuesta), `EscenaAR` y `EscenaVR`.
 
-## 4. Estado del equipo (revisado el 06/11/2026)
+## 4. Estado del equipo (revisado el 19/11/2026)
 
 | Elemento | Estado |
 |---|---|
 | Kinect for Windows SDK 2.0 | ✅ Instalado |
-| Unity **2022.3.62f1** (la versión de ambos proyectos) | ❌ **Falta**. Solo está Unity 6 (6000.6.8f1) |
-| Blender | ❌ No encontrado |
-| Editor de código (VS Code o Visual Studio) | ❌ No encontrado (el instalador de VS Code está en Descargas) |
-| Kinect v2 conectado | ⚠️ No detectado ahora mismo |
+| Unity **2022.3.62f3** (la versión del proyecto) | ✅ Instalado. No abrir el proyecto con Unity 6 |
+| Kinect v2 + adaptador para PC | ✅ Funciona. Lo detecta Windows y lo usa Unity (`Kinect2Interface` en *Connected Sensor*) |
+| Editor de código (VS Code y Visual Studio) | ✅ Instalados |
+| Git | ✅ Instalado. El repositorio está en GitHub: `marielbrachowicz/LEGyo` |
+| Blender | ❌ No instalado. Solo hace falta si hay que crear las animaciones de tobillo o retocar las existentes |
 | Tarjeta gráfica | Intel integrada. Sirve para **Kinect v2**, pero **no** para el body tracking de Azure Kinect, que necesita NVIDIA |
+
+Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0, Git y la carpeta `01_Referencia_MiembroSuperior` (ver la sección 5).
 
 ## 5. Para quien continúa el trabajo (desde GitHub)
 
@@ -104,13 +107,14 @@ Escenas del brazo: `EscenaPrincipal` (menú), `EscenaMixta` (la mitad real y la 
 ## 6. Lo que falta (checklist)
 
 ### Instalación
-- [ ] Instalar **Unity 2022.3.62f1** desde Unity Hub (Installs → Install Editor → Archive). No abrir los proyectos con Unity 6.
-- [ ] Instalar **VS Code** + extensión "Unity" (o Visual Studio Community con "Desarrollo de juegos con Unity").
+- [x] Instalar **Unity 2022.3.62f3** desde Unity Hub (Installs → Install Editor → Archive). No abrir los proyectos con Unity 6.
+- [x] Instalar **VS Code** + extensión "Unity" (o Visual Studio Community con "Desarrollo de juegos con Unity").
 - [ ] Instalar **Blender** (solo si hay que retocar animaciones o shape keys).
-- [ ] Conectar el **Kinect v2** con su adaptador para PC y probarlo en *Kinect Studio* o en *SDK Browser v2.0*.
+- [x] Conectar el **Kinect v2** con su adaptador para PC y probarlo.
+- [x] Instalar **Git** y subir el proyecto a GitHub (19/11/2026).
 
 ### Decisiones pendientes
-- [ ] **Sensor**: el proyecto del brazo está configurado para **Azure Kinect** y la propuesta dice **Kinect v2**. Con este PC, lo viable es Kinect v2.
+- [x] **Sensor**: decidido **Kinect v2**. Es el que pide la propuesta y el único viable con gráfica Intel. El proyecto del brazo usaba Azure Kinect.
 - [ ] **Pierna**: ¿solo la derecha (el modelo está completo en `_R`) o las dos?
 - [ ] **Pie**: la propuesta lo menciona, pero `PIERNA.fbx` **no trae animaciones de tobillo** (dorsiflexión y plantiflexión). Hay que hacerlas en Blender o dejarlas fuera del alcance.
 - [ ] **Gesto de activación**: qué hace exactamente la mano contraria (tocar el muslo, levantar la mano, cerrar el puño).
