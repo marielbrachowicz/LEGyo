@@ -98,11 +98,17 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
 3. Abre `Assets/ARMyo/Scenes/PruebaPierna` y dale a **Play**, de frente al Kinect v2, a 2–3 m. Los ángulos aparecen arriba a la derecha.
    - Si la escena no tiene `KinectController`, usa el menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
    - Teclas: **0–8** cambian la animación, **R** reinicia el máximo y **P** copia los datos crudos a la Console.
+   - Fase 4: menú **ARMyo → 4** crea `EscenaMixta` (cámara a la izquierda, modelo a la derecha). Si se vuelve a ejecutar el menú 3, hay que repetir también el 4.
+   - Fase 3: menú **ARMyo → 3. Añadir animación en vivo (dos piernas)**. Desde ese momento cada pierna sigue su rodilla y las teclas 0–8 quedan desactivadas. Sin Kinect: **↑/↓** mueven la pierna derecha, **W/S** la izquierda, **Espacio** hace un ciclo automático con las piernas alternadas y **K** vuelve al Kinect.
 4. Lo que **no** está en GitHub porque pesa demasiado, y se pide aparte (USB, Drive…):
    - `01_Referencia_MiembroSuperior/`: **obligatoria** (ver el paso 0). Es el proyecto del brazo, que sirve de plantilla para la Fase 3 (`MovementClassifier`, `MuscleIntensityByAngle`, `MuscleAnatomyData`).
    - `02_Modelos3D/`: el modelo del cuerpo completo, que es solo de respaldo. `PIERNA.fbx` ya está dentro de `Assets`.
    - `onnxruntime_providers_cuda.dll`, que solo hace falta para Azure Kinect, no para Kinect v2.
-5. **Siguiente paso: la Fase 3.** La pierna 3D debe imitar en vivo el ángulo del usuario, y sus músculos deben colorearse según el movimiento. Las fuentes de datos ya existen: `MedidorAngulosPierna` publica `OnAngulosCambiados(rodilla, flexiónCadera, abducciónCadera)` y expone las propiedades `FlexionRodilla`, `FlexionCadera` y `AbduccionCadera`.
+5. **Estado al 19/11/2026: las Fases 3 y 4 están hechas y probadas con el Kinect v2.** Para verlas:
+   - Si la escena no está montada, ejecuta en orden los menús **ARMyo → 1, 2, 3 y 4**. Hay que repetir el 3 y el 4 si se cambia algo de la escena de prueba.
+   - Abre `Assets/ARMyo/Scenes/EscenaMixta` y dale a **Play Maximized**. Verás tu imagen en espejo con la ventana AR sobre la rodilla, las dos piernas 3D en vivo y los paneles en letra grande.
+   - Teclas: **↑/↓** y **W/S** simulan cada rodilla, **Espacio** hace un ciclo automático, **K** vuelve al Kinect, **E** invierte la imagen e **I** intercambia las piernas 3D.
+6. **Siguiente paso: la Fase 5, activación por voz.** Primero hay que decidir con el profesor qué palabras se usan y qué hace cada una. Después viene la Fase 6, la cadera: `MovementClassifier` ya trae los presets de cadera y `MedidorAngulosPierna` ya mide la flexión y la abducción de la cadera.
 
 ## 6. Lo que falta (checklist)
 
@@ -115,9 +121,9 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
 
 ### Decisiones pendientes
 - [x] **Sensor**: decidido **Kinect v2**. Es el que pide la propuesta y el único viable con gráfica Intel. El proyecto del brazo usaba Azure Kinect.
-- [ ] **Pierna**: ¿solo la derecha (el modelo está completo en `_R`) o las dos?
+- [x] **Pierna**: decidido el 19/11/2026, **las dos**, juntas como en un cuerpo completo. La izquierda es una copia en espejo de `PIERNA.fbx`, porque el modelo solo trae la derecha.
 - [ ] **Pie**: la propuesta lo menciona, pero `PIERNA.fbx` **no trae animaciones de tobillo** (dorsiflexión y plantiflexión). Hay que hacerlas en Blender o dejarlas fuera del alcance.
-- [ ] **Gesto de activación**: qué hace exactamente la mano contraria (tocar el muslo, levantar la mano, cerrar el puño).
+- [x] **Gesto de activación**: decidido el 19/11/2026 (lo pidió el profesor): **por voz**, no con la mano. Falta definir qué palabras se usan y qué hace cada una.
 - [x] **Animación**: decidido el 19/11/2026. El modelo debe seguir el ángulo real del usuario **en vivo**, por ejemplo avanzando cada animación según el ángulo medido.
 
 ### Desarrollo en `03_Unity_MiembroInferior`
@@ -128,7 +134,17 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
   - `Scripts/Sensores/KinectBridgePierna.cs`: lee el Kinect y publica un `LegBodyFrame` en cada frame. Se elige la pierna derecha o la izquierda.
   - `Scripts/Biomecanica/MedidorAngulosPierna.cs`: suaviza los ángulos y los muestra en pantalla.
   - `Editor/ConfigurarKinect.cs`: menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
-- [ ] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender.
-- [ ] Fase 4: escena mixta (mitad real con el espejo, mitad virtual con el modelo) y la ventana AR sobre la rodilla.
-- [ ] Fase 5: gesto de la mano contraria + nombres de los músculos por fase.
+- [x] Fase 3: `MovementClassifier` + `MuscleIntensityByAngle` → los músculos cambian de color al flexionar y extender. **Probado con el Kinect v2 el 19/11/2026** (rama `fase3-animacion`): la pierna 3D sigue la rodilla casi sin retraso y reconoce flexión y extensión. El clip `FLEXION_RODILLA` solo llega a **88°**.
+  - **Dos piernas** (rama `ambas-piernas`, **probado con el Kinect v2 el 19/11/2026**: cada pierna sigue su rodilla y se dobla bien por encima de 88°): el menú 3 crea `Pierna_Izquierda` como copia en espejo respecto al sacro. Oculta en la copia la columna y el suelo pélvico para que no se dibujen dos veces, y añade un segundo `KinectBridgePierna` + `MedidorAngulosPierna` para la pierna izquierda. `KinectBridgePierna` ya no destruye el segundo puente.
+  - **Más de 88° sin Blender**: `PiernaAnimadaEnVivo` sigue doblando la rodilla por código, sobre el eje que usa el clip, hasta `anguloMaxModelo` (135°).
+  - `Scripts/Biomecanica/FuenteAngulosPierna.cs`: toma el ángulo de `MedidorAngulosPierna` o lo simula con el teclado (**↑/↓**, **Espacio** = ciclo automático, **K** = volver al Kinect).
+  - `Scripts/Biomecanica/MovementClassifier.cs`: flexión / extensión / mantiene / reposo según la velocidad del ángulo, con presets de rodilla y cadera.
+  - `Scripts/Animacion/PiernaAnimadaEnVivo.cs`: fija el tiempo de `FLEXION_RODILLA` según el ángulo medido. Al arrancar mide el clip (huesos `Leg_Upper.R` / `Leg_Knee.R`) para que el modelo muestre el mismo ángulo que el usuario.
+  - `Scripts/Anatomia/MuscleAnatomyData.cs`, `MuscleIntensityByAngle.cs`, `PanelMovimientoPierna.cs`: nombres y acción de los músculos, color blanco → rojo con `MaterialPropertyBlock` y panel en pantalla.
+  - Músculos que se colorean (nombres reales del FBX): flexores `Biceps_Femoris_Long_Head_R`, `Biceps_Femoris_Short_Head_R`, `Semitendinosus_R`, `Semimembranosus_R`, `Gastrocnemius_Lateral_Medial_R`; extensores `Rectus_Femoris_R`, `Vastus_Lateralis_R`, `Vastus_Medialis_R`, `Vastus_Intermedius_R`. Dentro de Unity, la malla que se pinta de cada uno se llama `Nombre.001` (por ejemplo `Rectus_Femoris.001`). **El semitendinoso no tiene malla propia**: sale en pantalla, pero no cambia de color.
+  - `Editor/ConfigurarAnimacionEnVivo.cs`: menú **ARMyo → 3. Añadir animación en vivo (dos piernas)**.
+- [x] Fase 4: escena mixta (mitad real con el espejo, mitad virtual con el modelo) y la ventana AR sobre la rodilla.
+  - **Escena mixta** (rama `fase4-escena-mixta`): menú **ARMyo → 4. Crear escena mixta (cámara | modelo)**. Copia `PruebaPierna` en `Scenes/EscenaMixta.unity` y divide la pantalla en tres columnas: a la izquierda (40 %), la imagen en color del Kinect en espejo (`Scripts/Mixta/VistaCamaraKinect.cs`); en el centro (28 %), las dos piernas virtuales, encuadradas por `EncuadrarModelo`; a la derecha (32 %), los paneles en **letra grande** para leerlos a 2–3 m: el estado del Kinect y, por cada rodilla, la fase y los músculos activos. Los paneles se escalan con el tamaño de la ventana (`Core/EscalaUI.cs`). **E** invierte la imagen. Probado con el Kinect v2 el 19/11/2026: va fluido con la gráfica Intel, la imagen se ve en espejo y los paneles se leen a 2–3 m.
+  - **Ventana AR sobre la rodilla** (rama `fase4-ventana-ar`, **probada con el Kinect v2 el 19/11/2026**): `Scripts/Mixta/VentanaARRodilla.cs`. Es un recuadro amarillo que sigue la rodilla del usuario en la imagen del Kinect (`GetJointPosColorOverlay`); su tamaño depende de la distancia cadera–rodilla. Dentro se ve la rodilla virtual con los músculos coloreados: la dibuja la cámara `CamaraRodillaAR` en un RenderTexture con fondo transparente. Sigue la pierna que se está moviendo. La monta el menú **ARMyo → 4**. `IntercambioPiernas` decide qué pierna 3D sigue a cada pierna real: **I** las intercambia en Play. Por defecto empiezan intercambiadas: así cada pierna 3D queda del mismo lado que la pierna real en la imagen (comprobado).
+- [ ] Fase 5: activación **por voz** (`KeywordRecognizer` de Windows, funciona sin internet) + nombres de los músculos por fase.
 - [ ] Fase 6: cadera (flexión/extensión, abducción/aducción, rotaciones).

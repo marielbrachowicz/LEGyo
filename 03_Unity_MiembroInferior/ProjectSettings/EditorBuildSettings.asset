@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ARMyo/Scenes/EscenaMixta.unity
+    guid: 75711c6abeb6086439f1b6db0e7f6ffd
   m_configObjects: {}

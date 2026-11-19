@@ -48,8 +48,9 @@ namespace ARMyo.Sensores
 
         void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-            Instance = this;
+            // Puede haber dos puentes (pierna derecha e izquierda): Instance es solo el primero.
+            // Antes se destruía el segundo, y eso impedía medir las dos piernas.
+            if (Instance == null) Instance = this;
         }
 
         void OnDestroy()
