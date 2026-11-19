@@ -19,10 +19,19 @@ namespace ARMyo.Anatomia
         public bool mostrar = true;
         [Tooltip("Texto del título, p. ej. \"Rodilla derecha\".")]
         public string titulo = "Rodilla";
-        [Tooltip("Dibujar el panel en el lado derecho de la pantalla.")]
-        public bool ladoDerechoPantalla;
-        [Tooltip("Distancia (px) desde el borde superior.")]
-        public float margenSuperior = 10f;
+        [Header("Posición")]
+        [Tooltip("Punto de la pantalla (0–1) donde se coloca el panel. (0,0) = arriba a la izquierda, (1,1) = abajo a la derecha.")]
+        public Vector2 anclaPantalla = Vector2.zero;
+        [Tooltip("Esquina del panel (0–1) que se pone en el ancla. (1,0) = su esquina superior derecha.")]
+        public Vector2 pivote = Vector2.zero;
+        [Tooltip("Desplazamiento en píxeles desde el ancla.")]
+        public Vector2 desplazamiento = new Vector2(10f, 10f);
+
+        /// <summary>Coloca el panel: ancla y pivote en fracciones (0–1), desplazamiento en píxeles.</summary>
+        public void Colocar(Vector2 ancla, Vector2 piv, Vector2 desp)
+        {
+            anclaPantalla = ancla; pivote = piv; desplazamiento = desp;
+        }
         [Tooltip("Mostrar la línea de ayuda de teclas.")]
         public string ayudaTeclas = "↑/↓ simular ángulo   Espacio ciclo automático   K volver al Kinect";
 
@@ -48,7 +57,8 @@ namespace ARMyo.Anatomia
             }
 
             float w = 420, h = 270;
-            var r = new Rect(ladoDerechoPantalla ? Screen.width - w - 10 : 10, margenSuperior, w, h);
+            var r = new Rect(anclaPantalla.x * Screen.width + desplazamiento.x - pivote.x * w,
+                             anclaPantalla.y * Screen.height + desplazamiento.y - pivote.y * h, w, h);
             GUI.Box(r, GUIContent.none);
             GUILayout.BeginArea(new Rect(r.x + 12, r.y + 8, w - 24, h - 16));
 

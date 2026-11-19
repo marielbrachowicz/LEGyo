@@ -105,9 +105,13 @@ namespace ARMyo.EditorTools
 
             // ── Montar cada pierna ────────────────────────
             var intensidadDer = Montar(der, clip, medidorDer, "Derecha", "Rodilla derecha",
-                                       KeyCode.UpArrow, KeyCode.DownArrow, 0f, false, 10f, "↑/↓");
-            Montar(izq, clip, medidorIzq, "Izquierda", "Rodilla izquierda",
-                   KeyCode.W, KeyCode.S, 0.5f, true, medidorDer != null ? 220f : 10f, "W/S");
+                                       KeyCode.UpArrow, KeyCode.DownArrow, 0f, "↑/↓");
+            var intensidadIzq = Montar(izq, clip, medidorIzq, "Izquierda", "Rodilla izquierda",
+                                       KeyCode.W, KeyCode.S, 0.5f, "W/S");
+            // Derecha: arriba a la izquierda. Izquierda: a la derecha, debajo del panel del Kinect.
+            PanelDe(intensidadDer).Colocar(Vector2.zero, Vector2.zero, new Vector2(10f, 10f));
+            PanelDe(intensidadIzq).Colocar(new Vector2(1f, 0f), new Vector2(1f, 0f),
+                                           new Vector2(-10f, medidorDer != null ? 220f : 10f));
 
             EncuadrarCamara(der, izq);
 
@@ -187,7 +191,7 @@ namespace ARMyo.EditorTools
         // ─────────────────────────────────────────────
         static MuscleIntensityByAngle Montar(GameObject pierna, AnimationClip clip, MedidorAngulosPierna medidor,
                                              string sufijo, string titulo, KeyCode flex, KeyCode ext, float desfase,
-                                             bool panelDerecha, float margenSuperior, string teclas)
+                                             string teclas)
         {
             var enVivo = pierna.AddComponent<PiernaAnimadaEnVivo>();
             enVivo.clip = clip;
@@ -213,14 +217,15 @@ namespace ARMyo.EditorTools
             panel.fuente = fuente;
             panel.pierna = enVivo;
             panel.titulo = titulo;
-            panel.ladoDerechoPantalla = panelDerecha;
-            panel.margenSuperior = margenSuperior;
             panel.ayudaTeclas = $"{teclas} simular   Espacio ciclo   K volver al Kinect";
 
             enVivo.fuente = fuente;
             intensidad.clasificador = clasificador;
             return intensidad;
         }
+
+        static PanelMovimientoPierna PanelDe(MuscleIntensityByAngle intensidad) =>
+            Object.FindObjectsOfType<PanelMovimientoPierna>(true).First(p => p.intensidad == intensidad);
 
         static void EncuadrarCamara(params GameObject[] modelos)
         {

@@ -98,6 +98,7 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
 3. Abre `Assets/ARMyo/Scenes/PruebaPierna` y dale a **Play**, de frente al Kinect v2, a 2–3 m. Los ángulos aparecen arriba a la derecha.
    - Si la escena no tiene `KinectController`, usa el menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
    - Teclas: **0–8** cambian la animación, **R** reinicia el máximo y **P** copia los datos crudos a la Console.
+   - Fase 4: menú **ARMyo → 4** crea `EscenaMixta` (cámara a la izquierda, modelo a la derecha). Si se vuelve a ejecutar el menú 3, hay que repetir también el 4.
    - Fase 3: menú **ARMyo → 3. Añadir animación en vivo (dos piernas)**. Desde ese momento cada pierna sigue su rodilla y las teclas 0–8 quedan desactivadas. Sin Kinect: **↑/↓** mueven la pierna derecha, **W/S** la izquierda, **Espacio** hace un ciclo automático con las piernas alternadas y **K** vuelve al Kinect.
 4. Lo que **no** está en GitHub porque pesa demasiado, y se pide aparte (USB, Drive…):
    - `01_Referencia_MiembroSuperior/`: **obligatoria** (ver el paso 0). Es el proyecto del brazo, que sirve de plantilla para la Fase 3 (`MovementClassifier`, `MuscleIntensityByAngle`, `MuscleAnatomyData`).
@@ -139,5 +140,7 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
   - Músculos que se colorean (nombres reales del FBX): flexores `Biceps_Femoris_Long_Head_R`, `Biceps_Femoris_Short_Head_R`, `Semitendinosus_R`, `Semimembranosus_R`, `Gastrocnemius_Lateral_Medial_R`; extensores `Rectus_Femoris_R`, `Vastus_Lateralis_R`, `Vastus_Medialis_R`, `Vastus_Intermedius_R`. Dentro de Unity, la malla que se pinta de cada uno se llama `Nombre.001` (por ejemplo `Rectus_Femoris.001`). **El semitendinoso no tiene malla propia**: sale en pantalla, pero no cambia de color.
   - `Editor/ConfigurarAnimacionEnVivo.cs`: menú **ARMyo → 3. Añadir animación en vivo**.
 - [ ] Fase 4: escena mixta (mitad real con el espejo, mitad virtual con el modelo) y la ventana AR sobre la rodilla.
+  - **Primera parte hecha** (rama `fase4-escena-mixta`, falta probarla en Unity): menú **ARMyo → 4. Crear escena mixta (cámara | modelo)**. Copia `PruebaPierna` en `Scenes/EscenaMixta.unity` y divide la pantalla en dos: a la izquierda, la imagen en color del Kinect (`Scripts/Mixta/VistaCamaraKinect.cs`); a la derecha, las dos piernas virtuales. **E** invierte la imagen si no se ve como un espejo.
+  - Falta: la ventana AR sobre la rodilla.
 - [ ] Fase 5: activación **por voz** (`KeywordRecognizer` de Windows, funciona sin internet) + nombres de los músculos por fase.
 - [ ] Fase 6: cadera (flexión/extensión, abducción/aducción, rotaciones).
