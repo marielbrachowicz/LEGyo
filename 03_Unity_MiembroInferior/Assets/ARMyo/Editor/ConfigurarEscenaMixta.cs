@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using com.rfilkov.kinect;
 using ARMyo.Anatomia;
+using ARMyo.Animacion;
 using ARMyo.Biomecanica;
 using ARMyo.Mixta;
 
@@ -127,7 +128,7 @@ namespace ARMyo.EditorTools
             Debug.Log("[ARMyo] Escena mixta creada: " + Destino);
             EditorUtility.DisplayDialog("ARMyo",
                 "Listo. Se creó la escena EscenaMixta:\n  izquierda = tu imagen del Kinect (en espejo), con la ventana AR sobre la rodilla\n  centro = las dos piernas virtuales\n  derecha = los paneles\n" + aviso +
-                "\nPulsa ▶ Play (mejor con 'Play Maximized').\n  E = invertir la imagen si no se ve como un espejo\n" +
+                "\nPulsa ▶ Play (mejor con 'Play Maximized').\n  E = invertir la imagen (espejo)\n  I = intercambiar qué pierna 3D sigue a cada pierna\n" +
                 "  ↑/↓, W/S, Espacio, K = igual que antes", "OK");
         }
 
@@ -150,17 +151,26 @@ namespace ARMyo.EditorTools
             Estirar(contRt, Vector2.zero, Vector2.one);
             var contenido = contRt.gameObject.AddComponent<RawImage>();
 
-            var etRt = NuevoUI("Etiqueta", ventana);
-            etRt.anchorMin = new Vector2(0f, 1f); etRt.anchorMax = new Vector2(1f, 1f);
-            etRt.pivot = new Vector2(0.5f, 0f);
-            etRt.offsetMin = new Vector2(-100f, 4f); etRt.offsetMax = new Vector2(100f, 44f);
+            // Etiqueta encima del recuadro, sobre una franja oscura para que se lea sobre cualquier fondo
+            var fondoEt = NuevoUI("EtiquetaFondo", ventana);
+            fondoEt.anchorMin = fondoEt.anchorMax = new Vector2(0.5f, 1f);
+            fondoEt.pivot = new Vector2(0.5f, 0f);
+            fondoEt.anchoredPosition = new Vector2(0f, 6f);
+            fondoEt.sizeDelta = new Vector2(330f, 52f);
+            fondoEt.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.75f);
+
+            var etRt = NuevoUI("Etiqueta", fondoEt);
+            Estirar(etRt, Vector2.zero, Vector2.one);
             var etiqueta = etRt.gameObject.AddComponent<Text>();
             etiqueta.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            etiqueta.fontSize = 30;
+            etiqueta.fontSize = 36;
             etiqueta.fontStyle = FontStyle.Bold;
-            etiqueta.alignment = TextAnchor.LowerCenter;
+            etiqueta.alignment = TextAnchor.MiddleCenter;
             etiqueta.color = new Color(1f, 0.85f, 0.2f);
             etiqueta.horizontalOverflow = HorizontalWrapMode.Overflow;
+            var sombra = etRt.gameObject.AddComponent<Outline>();
+            sombra.effectColor = Color.black;
+            sombra.effectDistance = new Vector2(2f, -2f);
 
             // Cámara que enfoca la rodilla del modelo (dibuja en un RenderTexture, no en pantalla)
             var camGo = new GameObject("CamaraRodillaAR");
@@ -188,6 +198,29 @@ namespace ARMyo.EditorTools
             }
             if (ar.rodillaDer == null || ar.rodillaIzq == null)
                 Debug.LogWarning("[ARMyo] Ventana AR: no se encontraron los huesos de la rodilla en Pierna_Derecha / Pierna_Izquierda.");
+
+            // Qué pierna 3D sigue a cada pierna real (tecla I en Play)
+            var inter = canvasGo.AddComponent<IntercambioPiernas>();
+            inter.intercambiado = true; // probado 19/11/2026: sin intercambiar, junto a la cámara las piernas salían cruzadas
+            inter.ventanaAR = ar;
+            inter.rodillaA = ar.rodillaDer; inter.musloA = ar.musloDer;
+            inter.rodillaB = ar.rodillaIzq; inter.musloB = ar.musloIzq;
+            var pA = GameObject.Find("Pierna_Derecha");
+            var pB = GameObject.Find("Pierna_Izquierda");
+            if (pA != null) { inter.animA = pA.GetComponent<PiernaAnimadaEnVivo>(); inter.musculosA = pA.GetComponent<MuscleIntensityByAngle>(); }
+            if (pB != null) { inter.animB = pB.GetComponent<PiernaAnimadaEnVivo>(); inter.musculosB = pB.GetComponent<MuscleIntensityByAngle>(); }
+            inter.clasificadorDer = ar.clasificadorDer;
+            inter.clasificadorIzq = ar.clasificadorIzq;
+            foreach (var f in Object.FindObjectsOfType<FuenteAngulosPierna>(true))
+            {
+                if (f.gameObject.name.EndsWith("Derecha")) inter.fuenteDer = f;
+                else if (f.gameObject.name.EndsWith("Izquierda")) inter.fuenteIzq = f;
+            }
+            foreach (var p in Object.FindObjectsOfType<PanelMovimientoPierna>(true))
+            {
+                if (p.gameObject.name.EndsWith("Derecha")) inter.panelDer = p;
+                else if (p.gameObject.name.EndsWith("Izquierda")) inter.panelIzq = p;
+            }
         }
 
         static Transform Hueso(string modelo, string hueso)

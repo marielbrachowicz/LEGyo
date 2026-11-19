@@ -33,6 +33,8 @@ namespace ARMyo.Mixta
         [Tooltip("Tamaño de la ventana respecto a la distancia cadera–rodilla en la imagen.")]
         [Range(0.5f, 2f)] public float factorTamano = 1.1f;
         [Range(0f, 1f)] public float opacidad = 0.92f;
+        [Tooltip("Voltear izquierda/derecha la rodilla virtual dentro de la ventana.")]
+        public bool voltearContenido;
         [Tooltip("Suavizado del movimiento de la ventana (más alto = sigue más rápido).")]
         public float suavizado = 14f;
 
@@ -112,8 +114,7 @@ namespace ARMyo.Mixta
 
             if (contenido != null)
             {
-                // La imagen real está en espejo: la rodilla virtual también, para que coincidan los lados
-                contenido.uvRect = espejo ? new Rect(1f, 0f, -1f, 1f) : new Rect(0f, 0f, 1f, 1f);
+                contenido.uvRect = voltearContenido ? new Rect(1f, 0f, -1f, 1f) : new Rect(0f, 0f, 1f, 1f);
                 contenido.color = new Color(1f, 1f, 1f, opacidad);
             }
             if (etiqueta != null) etiqueta.text = _derecha ? "Rodilla derecha" : "Rodilla izquierda";
