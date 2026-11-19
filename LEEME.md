@@ -89,13 +89,14 @@ Escenas del brazo: `EscenaPrincipal` (menú), `EscenaMixta` (la mitad real y la 
 
 ## 5. Para quien continúa el trabajo (desde GitHub)
 
+0. ⚠️ **Requisito obligatorio:** copia la carpeta **`01_Referencia_MiembroSuperior`** (el proyecto del brazo, unos 3,3 GB) **en la raíz del repositorio** con ese nombre exacto. No está en GitHub por su tamaño. `.gitignore` la excluye, así que no se sube por error. Sin ella no se pueden consultar los scripts del brazo que hay que adaptar en la Fase 3.
 1. Instala **Unity 2022.3.62f3**, exactamente esa versión, y el **Kinect for Windows SDK 2.0**.
 2. Clona el repositorio y abre la carpeta `03_Unity_MiembroInferior` desde Unity Hub. La primera vez tarda porque se regenera la carpeta `Library`.
 3. Abre `Assets/ARMyo/Scenes/PruebaPierna` y dale a **Play**, de frente al Kinect v2, a 2–3 m. Los ángulos aparecen arriba a la derecha.
    - Si la escena no tiene `KinectController`, usa el menú **ARMyo → 2. Añadir Kinect v2 a la escena**.
    - Teclas: **0–8** cambian la animación, **R** reinicia el máximo y **P** copia los datos crudos a la Console.
 4. Lo que **no** está en GitHub porque pesa demasiado, y se pide aparte (USB, Drive…):
-   - `01_Referencia_MiembroSuperior/`: el proyecto del brazo, que sirve de plantilla para la Fase 3 (`MovementClassifier`, `MuscleIntensityByAngle`, `MuscleAnatomyData`).
+   - `01_Referencia_MiembroSuperior/`: **obligatoria** (ver el paso 0). Es el proyecto del brazo, que sirve de plantilla para la Fase 3 (`MovementClassifier`, `MuscleIntensityByAngle`, `MuscleAnatomyData`).
    - `02_Modelos3D/`: el modelo del cuerpo completo, que es solo de respaldo. `PIERNA.fbx` ya está dentro de `Assets`.
    - `onnxruntime_providers_cuda.dll`, que solo hace falta para Azure Kinect, no para Kinect v2.
 5. **Siguiente paso: la Fase 3.** La pierna 3D debe imitar en vivo el ángulo del usuario, y sus músculos deben colorearse según el movimiento. Las fuentes de datos ya existen: `MedidorAngulosPierna` publica `OnAngulosCambiados(rodilla, flexiónCadera, abducciónCadera)` y expone las propiedades `FlexionRodilla`, `FlexionCadera` y `AbduccionCadera`.
