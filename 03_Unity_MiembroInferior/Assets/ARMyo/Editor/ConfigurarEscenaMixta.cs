@@ -13,7 +13,8 @@ namespace ARMyo.EditorTools
     /// <summary>
     /// Menú "ARMyo → 4. Crear escena mixta (cámara | modelo)".
     /// Copia PruebaPierna (ya con las dos piernas del menú 3) en EscenaMixta y la divide en tres columnas:
-    ///   · 0–40 %   → imagen en color del Kinect, en espejo (la "mitad real")
+    ///   · 0–40 %   → imagen en color del Kinect, en espejo (la "mitad real"),
+    ///                con la ventana AR que sigue la rodilla (VentanaARRodilla)
     ///   · 40–68 %  → las dos piernas virtuales con sus músculos
     ///   · 68–100 % → los paneles, en letra grande (Kinect, rodilla derecha, rodilla izquierda), uno debajo de otro
     /// Activa la imagen en color en el KinectManager.
@@ -99,6 +100,9 @@ namespace ARMyo.EditorTools
             txt.color = new Color(1f, 1f, 1f, 0.6f);
             vista.avisoSinImagen = txt;
 
+            // ── Ventana AR sobre la rodilla ───────────────
+            CrearVentanaAR(canvasGo, vista, imgRt, cam);
+
             // ── Paneles: columna de la derecha, uno debajo de otro ──
             var arribaDerecha = new Vector2(1f, 0f);
             foreach (var m in Object.FindObjectsOfType<MedidorAngulosPierna>(true))
@@ -122,9 +126,74 @@ namespace ARMyo.EditorTools
 
             Debug.Log("[ARMyo] Escena mixta creada: " + Destino);
             EditorUtility.DisplayDialog("ARMyo",
-                "Listo. Se creó la escena EscenaMixta:\n  izquierda = tu imagen del Kinect (en espejo)\n  centro = las dos piernas virtuales\n  derecha = los paneles\n" + aviso +
+                "Listo. Se creó la escena EscenaMixta:\n  izquierda = tu imagen del Kinect (en espejo), con la ventana AR sobre la rodilla\n  centro = las dos piernas virtuales\n  derecha = los paneles\n" + aviso +
                 "\nPulsa ▶ Play (mejor con 'Play Maximized').\n  E = invertir la imagen si no se ve como un espejo\n" +
                 "  ↑/↓, W/S, Espacio, K = igual que antes", "OK");
+        }
+
+        static void CrearVentanaAR(GameObject canvasGo, VistaCamaraKinect vista, RectTransform imagen, UnityEngine.Camera camPrincipal)
+        {
+            // Recuadro (hijo de la imagen del Kinect, para moverse sobre ella)
+            var ventana = NuevoUI("VentanaAR_Rodilla", imagen);
+            ventana.anchorMin = ventana.anchorMax = new Vector2(0.5f, 0.5f);
+            ventana.sizeDelta = new Vector2(300f, 300f);
+            var fondo = ventana.gameObject.AddComponent<Image>();
+            fondo.color = new Color(1f, 1f, 1f, 0.06f);
+            var borde = ventana.gameObject.AddComponent<Outline>();
+            borde.effectColor = new Color(1f, 0.85f, 0.2f, 0.95f);
+            borde.effectDistance = new Vector2(4f, -4f);
+            var grupo = ventana.gameObject.AddComponent<CanvasGroup>();
+            grupo.alpha = 0f;
+            grupo.blocksRaycasts = false;
+
+            var contRt = NuevoUI("RodillaVirtual", ventana);
+            Estirar(contRt, Vector2.zero, Vector2.one);
+            var contenido = contRt.gameObject.AddComponent<RawImage>();
+
+            var etRt = NuevoUI("Etiqueta", ventana);
+            etRt.anchorMin = new Vector2(0f, 1f); etRt.anchorMax = new Vector2(1f, 1f);
+            etRt.pivot = new Vector2(0.5f, 0f);
+            etRt.offsetMin = new Vector2(-100f, 4f); etRt.offsetMax = new Vector2(100f, 44f);
+            var etiqueta = etRt.gameObject.AddComponent<Text>();
+            etiqueta.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            etiqueta.fontSize = 30;
+            etiqueta.fontStyle = FontStyle.Bold;
+            etiqueta.alignment = TextAnchor.LowerCenter;
+            etiqueta.color = new Color(1f, 0.85f, 0.2f);
+            etiqueta.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+            // Cámara que enfoca la rodilla del modelo (dibuja en un RenderTexture, no en pantalla)
+            var camGo = new GameObject("CamaraRodillaAR");
+            var camRodilla = camGo.AddComponent<UnityEngine.Camera>();
+            camRodilla.enabled = false;
+            camRodilla.depth = -10;
+
+            var ar = canvasGo.AddComponent<VentanaARRodilla>();
+            ar.vista = vista;
+            ar.imagen = imagen;
+            ar.ventana = ventana;
+            ar.contenido = contenido;
+            ar.etiqueta = etiqueta;
+            ar.grupo = grupo;
+            ar.camaraRodilla = camRodilla;
+            ar.camaraPrincipal = camPrincipal;
+            ar.rodillaDer = Hueso("Pierna_Derecha", "Leg_Knee.R");
+            ar.musloDer   = Hueso("Pierna_Derecha", "Leg_Upper.R");
+            ar.rodillaIzq = Hueso("Pierna_Izquierda", "Leg_Knee.R"); // la izquierda es la copia en espejo: mismos nombres
+            ar.musloIzq   = Hueso("Pierna_Izquierda", "Leg_Upper.R");
+            foreach (var c in Object.FindObjectsOfType<MovementClassifier>(true))
+            {
+                if (c.gameObject.name.EndsWith("Derecha")) ar.clasificadorDer = c;
+                else if (c.gameObject.name.EndsWith("Izquierda")) ar.clasificadorIzq = c;
+            }
+            if (ar.rodillaDer == null || ar.rodillaIzq == null)
+                Debug.LogWarning("[ARMyo] Ventana AR: no se encontraron los huesos de la rodilla en Pierna_Derecha / Pierna_Izquierda.");
+        }
+
+        static Transform Hueso(string modelo, string hueso)
+        {
+            var raiz = GameObject.Find(modelo);
+            return raiz == null ? null : raiz.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == hueso);
         }
 
         static RectTransform NuevoUI(string nombre, Transform padre)
