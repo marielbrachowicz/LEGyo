@@ -1,0 +1,9 @@
+LEGyo: reconocimiento de comandos local en español
+Motor: Vosk 0.3.38, Alpha Cephei (Apache-2.0)
+Paquete original: https://www.nuget.org/packages/Vosk/0.3.38
+Código y licencia: https://github.com/alphacep/vosk-api
+Modelo: vosk-model-small-es-0.42 (Apache-2.0)
+Origen: https://alphacephei.com/vosk/models
+Los DLL incluidos corresponden a Windows x64.
+El reconocimiento funciona localmente; no envía audio a un servicio.
+Incluir StreamingAssets/vosk-model-small-es-0.42 al compartir el proyecto.

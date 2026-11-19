@@ -1,0 +1,27 @@
+# Archivos regenerados por Unity y los editores
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Bb]uild/
+[Bb]uilds/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.pdb
+*.opendb
+*.VC.db
+.DS_Store
+Thumbs.db
+
+# Estos binarios son dependencias del proyecto, no resultados de compilación.
+!Assets/**/Plugins/**/*.dll
+!Assets/Plugins/**/*.dll
+!Assets/StreamingAssets/**
