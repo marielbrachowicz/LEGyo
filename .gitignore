@@ -52,3 +52,13 @@ onnxruntime_providers_cuda.dll.meta
 # Sistema
 Thumbs.db
 Desktop.ini
+# ── Proyecto de interfaz ──
+/04_Unity_Interfaz_LEGyo/[Ll]ibrary/
+/04_Unity_Interfaz_LEGyo/[Tt]emp/
+/04_Unity_Interfaz_LEGyo/[Oo]bj/
+/04_Unity_Interfaz_LEGyo/[Bb]uild/
+/04_Unity_Interfaz_LEGyo/[Bb]uilds/
+/04_Unity_Interfaz_LEGyo/[Ll]ogs/
+/04_Unity_Interfaz_LEGyo/[Uu]ser[Ss]ettings/
+/04_Unity_Interfaz_LEGyo/[Mm]emoryCaptures/
+/04_Unity_Interfaz_LEGyo/[Rr]ecordings/
