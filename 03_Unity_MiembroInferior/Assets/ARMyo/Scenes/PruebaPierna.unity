@@ -187,6 +187,100 @@ MonoBehaviour:
   bIgnoreZCoordinates: 0
   bIgnoreInferredJoints: 0
   usersFaceBackwards: 0
+--- !u!1 &1232445516
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1232445520}
+  - component: {fileID: 1232445519}
+  - component: {fileID: 1232445518}
+  - component: {fileID: 1232445517}
+  m_Layer: 0
+  m_Name: ARMyo_Fase3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1232445517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232445516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e823b34b514e56ad07e7b8904da85f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clasificador: {fileID: 1232445518}
+  intensidad: {fileID: 1610545156}
+  fuente: {fileID: 1232445519}
+  pierna: {fileID: 1610545155}
+  mostrar: 1
+--- !u!114 &1232445518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232445516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffee18cd3f5f4d65a0b1c61bc35f459b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fuente: {fileID: 1232445519}
+  articulacion: 0
+  preset:
+    umbralEntrar: 25
+    umbralSalir: 10
+    anguloReposo: 12
+  ventanaVelocidad: 0.3
+  tiempoQuieto: 0.35
+  fase: 0
+  velocidad: 0
+  angulo: 0
+--- !u!114 &1232445519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232445516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9220f519d49e48d289fb6411548d6e86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  medidor: {fileID: 1565764049}
+  simulando: 0
+  velocidadTeclas: 70
+  periodoCiclo: 4
+  anguloMaxSimulado: 120
+  flexionRodilla: 0
+  flexionCadera: 0
+  abduccionCadera: 0
+--- !u!4 &1232445520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232445516}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1474759467
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,6 +505,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1610545152}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1610545155}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1610545156}
   m_SourcePrefab: {fileID: 100100000, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
 --- !u!1 &1610545151 stripped
 GameObject:
@@ -424,7 +524,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610545151}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 876dabf73110b284b8afa6f9fa2cb1d1, type: 3}
   m_Name: 
@@ -462,6 +562,84 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &1610545154 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
+  m_PrefabInstance: {fileID: 1610545150}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1610545155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610545151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e8b0b9f38e94740b62da0bf83835d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fuente: {fileID: 1232445519}
+  clip: {fileID: -3982969916959432737, guid: 707ae5d28cf395d4c8d2cb81ea8bb3d6, type: 3}
+  huesoMuslo: Leg_Upper.R
+  huesoPierna: Leg_Knee.R
+  usarAnguloReal: 1
+  anguloUsuarioMax: 120
+  muestras: 96
+  suavizado: 0.08
+  anguloMostrado: 0
+  tiempoNormalizado: 0
+  anguloMaxClip: 0
+  tFinFlexion: 1
+  mapeoMedido: 0
+--- !u!114 &1610545156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610545151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f804443f6447bca5b618cf34abe1a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clasificador: {fileID: 1232445518}
+  modelo: {fileID: 1610545154}
+  musculos:
+  - malla: Biceps_Femoris_Long_Head_R
+    fase: 1
+    rangoAngulo: {x: 0, y: 110}
+  - malla: Biceps_Femoris_Short_Head_R
+    fase: 1
+    rangoAngulo: {x: 0, y: 110}
+  - malla: Semitendinosus_R
+    fase: 1
+    rangoAngulo: {x: 0, y: 110}
+  - malla: Semimembranosus_R
+    fase: 1
+    rangoAngulo: {x: 0, y: 110}
+  - malla: Gastrocnemius_Lateral_Medial_R
+    fase: 1
+    rangoAngulo: {x: 0, y: 110}
+  - malla: Rectus_Femoris_R
+    fase: 2
+    rangoAngulo: {x: 110, y: 0}
+  - malla: Vastus_Lateralis_R
+    fase: 2
+    rangoAngulo: {x: 110, y: 0}
+  - malla: Vastus_Medialis_R
+    fase: 2
+    rangoAngulo: {x: 110, y: 0}
+  - malla: Vastus_Intermedius_R
+    fase: 2
+    rangoAngulo: {x: 110, y: 0}
+  colorReposo: {r: 1, g: 1, b: 1, a: 1}
+  colorActivo: {r: 1, g: 0.08, b: 0.05, a: 1}
+  intensidadMinimaActiva: 0.4
+  intensidadSostenido: 0.45
+  suavizado: 6
+  umbralNombre: 0.15
 --- !u!1 &1977619618
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,3 +823,4 @@ SceneRoots:
   - {fileID: 1610545150}
   - {fileID: 1977619620}
   - {fileID: 1565764051}
+  - {fileID: 1232445520}

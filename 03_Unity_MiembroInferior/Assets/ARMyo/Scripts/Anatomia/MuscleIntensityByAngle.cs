@@ -66,7 +66,7 @@ namespace ARMyo.Anatomia
             foreach (var m in musculos)
             {
                 m.info = MuscleAnatomyData.Buscar(m.malla);
-                m.renderers = Array.FindAll(todos, r => r.name == m.malla);
+                m.renderers = Array.FindAll(todos, r => MuscleAnatomyData.CoincideMalla(r.name, m.malla));
                 if (m.renderers.Length == 0) faltan.Add(m.malla);
             }
 

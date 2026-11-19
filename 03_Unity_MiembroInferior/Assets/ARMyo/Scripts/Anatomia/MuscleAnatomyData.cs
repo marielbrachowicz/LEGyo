@@ -22,8 +22,9 @@ namespace ARMyo.Anatomia
 
     /// <summary>
     /// Versión pierna del MuscleAnatomyData del brazo: nombre y acción de cada músculo.
-    /// Los nombres de malla son los REALES de PIERNA.fbx (lado derecho, sufijo _R).
-    /// El FBX también trae copias "X.001" (sin animar); no se usan.
+    /// Los nombres son los nodos de PIERNA.fbx (sufijo _R). En Unity la malla pintable de cada
+    /// uno se llama "X.001" (p. ej. Rectus_Femoris.001); CoincideMalla() acepta las dos formas.
+    /// Semitendinosus no tiene malla propia en el modelo: sale en pantalla pero no se colorea.
     /// </summary>
     public static class MuscleAnatomyData
     {
@@ -47,8 +48,21 @@ namespace ARMyo.Anatomia
         public static MusculoInfo Buscar(string malla)
         {
             foreach (var m in Rodilla)
-                if (m.malla == malla) return m;
+                if (CoincideMalla(m.malla, malla)) return m;
             return null;
+        }
+
+        /// <summary>
+        /// En Unity las mallas pintables se llaman "Rectus_Femoris.001" y los nodos "_R" no tienen
+        /// Renderer. Se comparan sin el sufijo ".001" / ".003" ni "_R" / "_L".
+        /// </summary>
+        public static bool CoincideMalla(string nombreObjeto, string malla) =>
+            NombreBase(nombreObjeto) == NombreBase(malla);
+
+        public static string NombreBase(string n)
+        {
+            n = System.Text.RegularExpressions.Regex.Replace(n, @"\.\d+$", "");
+            return System.Text.RegularExpressions.Regex.Replace(n, @"_[RL]$", "");
         }
 
         public static string NombreFase(FaseMovimiento f) => f switch

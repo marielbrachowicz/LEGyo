@@ -92,7 +92,8 @@ namespace ARMyo.EditorTools
 
             // ── Comprobar los nombres de las mallas ───────
             var renderers = pierna.GetComponentsInChildren<Renderer>(true);
-            var faltan = intensidad.musculos.Where(m => renderers.All(r => r.name != m.malla)).Select(m => m.malla).ToList();
+            var faltan = intensidad.musculos.Where(m => !renderers.Any(r => MuscleAnatomyData.CoincideMalla(r.name, m.malla)))
+                                            .Select(m => m.malla).ToList();
             var sb = new StringBuilder($"[ARMyo] Mallas del modelo ({renderers.Length}):\n");
             foreach (var r in renderers.OrderBy(r => r.name)) sb.Append("  ").Append(r.name).Append('\n');
             Debug.Log(sb.ToString());

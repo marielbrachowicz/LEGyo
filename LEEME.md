@@ -134,7 +134,7 @@ Cada integrante debe tener lo mismo en su PC: Unity 2022.3.62f3, Kinect SDK 2.0,
   - `Scripts/Biomecanica/MovementClassifier.cs`: flexión / extensión / mantiene / reposo según la velocidad del ángulo, con presets de rodilla y cadera.
   - `Scripts/Animacion/PiernaAnimadaEnVivo.cs`: fija el tiempo de `FLEXION_RODILLA` según el ángulo medido. Al arrancar mide el clip (huesos `Leg_Upper.R` / `Leg_Knee.R`) para que el modelo muestre el mismo ángulo que el usuario.
   - `Scripts/Anatomia/MuscleAnatomyData.cs`, `MuscleIntensityByAngle.cs`, `PanelMovimientoPierna.cs`: nombres y acción de los músculos, color blanco → rojo con `MaterialPropertyBlock` y panel en pantalla.
-  - Músculos que se colorean (nombres reales del FBX): flexores `Biceps_Femoris_Long_Head_R`, `Biceps_Femoris_Short_Head_R`, `Semitendinosus_R`, `Semimembranosus_R`, `Gastrocnemius_Lateral_Medial_R`; extensores `Rectus_Femoris_R`, `Vastus_Lateralis_R`, `Vastus_Medialis_R`, `Vastus_Intermedius_R`.
+  - Músculos que se colorean (nombres reales del FBX): flexores `Biceps_Femoris_Long_Head_R`, `Biceps_Femoris_Short_Head_R`, `Semitendinosus_R`, `Semimembranosus_R`, `Gastrocnemius_Lateral_Medial_R`; extensores `Rectus_Femoris_R`, `Vastus_Lateralis_R`, `Vastus_Medialis_R`, `Vastus_Intermedius_R`. Dentro de Unity, la malla que se pinta de cada uno se llama `Nombre.001` (por ejemplo `Rectus_Femoris.001`). **El semitendinoso no tiene malla propia**: sale en pantalla, pero no cambia de color.
   - `Editor/ConfigurarAnimacionEnVivo.cs`: menú **ARMyo → 3. Añadir animación en vivo**.
 - [ ] Fase 4: escena mixta (mitad real con el espejo, mitad virtual con el modelo) y la ventana AR sobre la rodilla.
 - [ ] Fase 5: gesto de la mano contraria + nombres de los músculos por fase.
